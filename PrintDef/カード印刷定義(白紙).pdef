@@ -1,0 +1,88 @@
+$delt(-3,-3)
+
+//©‹Çî•ñ
+$rect(10, 80, 80, 40, 0, 0, 0, 0.1)
+$text(12, 89.7, "‚l‚r ƒSƒVƒbƒN", 12, LB) From:
+$text(40, 90, "‚l‚r ƒSƒVƒbƒN", 14, RB) JG2HNC
+$text_myport(41, 90, "‚l‚r ƒSƒVƒbƒN", 14, LB)
+
+$text(15, 95, "‚l‚r ƒSƒVƒbƒN", 11, LT) QTH:
+$text(24, 94.7, "‚l‚r –¾’©", 11, LT) %QTH_My%
+
+$text(15, 99, "‚l‚r ƒSƒVƒbƒN", 11, LT) JCC/JCG:
+$text(30, 99, "‚l‚r –¾’©", 11, LT) %CityCode_My%
+
+$text(55, 99, "‚l‚r ƒSƒVƒbƒN", 11, RT) GL:
+$text(55, 99, "‚l‚r –¾’©", 11, LT) %GL_My%
+
+
+$text(45, 110, "‚l‚r –¾’©", 12, CB) © –¼
+$text(45, 110, "‚l‚r –¾’©", 8, CT) Family, Given
+
+
+//ˆ¶æ
+$text(8, 12, "‚l‚r ƒSƒVƒbƒN", 11, LB) To Radio
+$text(8, 13, "‚l‚r ƒSƒVƒbƒN", 12, LT) %ScreenCall%
+$line(8, 18, 32, 18, 0, 0, 0, 0.2)
+
+//QSL“]‘——“
+$text_p(40.5, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 1) %CallQSL%
+$rect(40.0, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(50.0, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 2) %CallQSL%
+$rect(49.5, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(59.5, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 3) %CallQSL%
+$rect(59.0, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(69.0, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 4) %CallQSL%
+$rect(68.5, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(78.5, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 5) %CallQSL%
+$rect(78.0, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(88.0, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 6) %CallQSL%
+$rect(87.5, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+//QSOƒf[ƒ^—“
+$text(8, 30, "‚l‚r ƒSƒVƒbƒN", 10, LB) Confirming our QSO.
+$rect(8, 30, 86, 20, 0, 0, 0, 0.2)
+$line(8, 36, 94, 36, 0, 0, 0, 0.2)
+
+$text(21, 31, "‚l‚r ƒSƒVƒbƒN", 11, CT) Date
+$text_date(21, 38, "‚l‚r –¾’©", 11, CT)
+$text_date(21, 42, "‚l‚r –¾’©", 11, CT, yyyy)
+$line(33, 30, 33, 50, 0, 0, 0, 0.2)
+
+$text(43, 31, "‚l‚r ƒSƒVƒbƒN", 11, CT) Time
+$text(43, 38, "‚l‚r –¾’©", 11, CT) %Time_HHmm%
+$text(43, 42, "‚l‚r –¾’©", 11, CT) %ScreenTimeZone%
+$line(53, 30, 53, 50, 0, 0, 0, 0.2)
+
+$text_ifdata(58, 31, "‚l‚r ƒSƒVƒbƒN", 11, CT, 1, S/N, RST)
+$text(58, 42, "‚l‚r –¾’©", 11, CT) %RS_His%
+$line(63, 30, 63, 50, 0, 0, 0, 0.2)
+
+$text(70.5, 31, "‚l‚r ƒSƒVƒbƒN", 11, CT) Band
+$text(70.5, 42, "‚l‚r –¾’©", 11, CT) %Band%
+$line(78, 30, 78, 50, 0, 0, 0, 0.2)
+
+$text(86, 31, "‚l‚r ƒSƒVƒbƒN", 11, CT) Mode
+$text(86, 42, "‚l‚r –¾’©", 11, CT) %Mode%
+
+//PSE or TNX QSL
+$text_rcvd(10, 52, "‚l‚r ƒSƒVƒbƒN", 11) TNX QSL
+$text_unrcvd(10, 52, "‚l‚r ƒSƒVƒbƒN", 11) PSE QSL
+
+//RIG
+$text(10, 57, "‚l‚r ƒSƒVƒbƒN", 11) Rig:
+$text(18, 57, "‚l‚r –¾’©", 11) %Rig_My%
+$line(10, 62, 92, 62, 0, 0, 0, 0.2)
+
+//Ant
+$text(10, 65, "‚l‚r ƒSƒVƒbƒN", 11) Ant:
+$text(18, 65, "‚l‚r –¾’©", 11) %Ant_My%
+$line(10, 70, 92, 70, 0, 0, 0, 0.2)
+
+//”õl
+$text(10, 72, "‚l‚r –¾’©", 10) %CardMsg%

@@ -1,0 +1,104 @@
+$delt(-3,-3)
+$nparpage(4)
+
+//©‹Çî•ñ
+$rect(6, 125, 88, 15, 0, 0, 0, 0.1)
+$text(20, 133, "‚l‚r ƒSƒVƒbƒN", 12, RB) From:
+$text(20, 133, "‚l‚r ƒSƒVƒbƒN", 14, LB) JG2HNC
+$text(65, 133, "‚l‚r –¾’©", 12, CB) © –¼
+$text(65, 133, "‚l‚r –¾’©", 8, CT) Family, Given
+
+
+//ˆ¶æ
+$text(8, 12, "‚l‚r ƒSƒVƒbƒN", 11, LB) To Radio
+$text(8, 13, "‚l‚r ƒSƒVƒbƒN", 12, LT) %Call%
+$line(8, 18, 32, 18, 0, 0, 0, 0.2)
+
+//QSL“]‘——“
+$text_p(40.5, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 1) %CallQSL%
+$rect(40.0, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(50.0, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 2) %CallQSL%
+$rect(49.5, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(59.5, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 3) %CallQSL%
+$rect(59.0, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(69.0, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 4) %CallQSL%
+$rect(68.5, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(78.5, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 5) %CallQSL%
+$rect(78.0, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text_p(88.0, 12.5, "‚l‚r ƒSƒVƒbƒN", 20, 6) %CallQSL%
+$rect(87.5, 11, 6.5, 9.0, 255, 128, 128, 0.5)
+
+$text(6, 30, "‚l‚r ƒSƒVƒbƒN", 10, LB) Confirming our QSO(s).
+
+//QSOƒf[ƒ^—“‡@
+$rect(6, 30, 88, 40, 0, 0, 0, 0.2)
+$line(10, 35, 94, 35, 0, 0, 0, 0.2)
+$line(10, 43, 94, 43, 0, 0, 0, 0.2)
+$line(10, 30, 10, 70, 0, 0, 0, 0.2)
+$text(8, 50, "‚l‚r ƒSƒVƒbƒN", 11, CM) ‡@
+
+$text(20, 33, "‚l‚r ƒSƒVƒbƒN", 11, CM) Date
+$text_date(20, 35, "‚l‚r –¾’©", 11, CT)
+$text_date(20, 43, "‚l‚r –¾’©", 11, CB, yyyy)
+$line(33, 30, 33, 43, 0, 0, 0, 0.2)
+
+$text(41, 33, "‚l‚r ƒSƒVƒbƒN", 11, CM) Time
+$text(41, 35, "‚l‚r –¾’©", 11, CT) %Time_HHmm%[1]
+$text(41, 43, "‚l‚r –¾’©", 11, CB) %ScreenTimeZone%[1]
+$line(48, 30, 48, 43, 0, 0, 0, 0.2)
+
+$text(53, 33, "‚l‚r ƒSƒVƒbƒN", 11, CM) RST
+$text(53, 38, "‚l‚r –¾’©", 11, CT) %RS_His%[1]
+$line(58, 30, 58, 43, 0, 0, 0, 0.2)
+
+$text(68, 33, "‚l‚r ƒSƒVƒbƒN", 11, CM) Band
+$text(68, 38, "‚l‚r –¾’©", 11, CT) %Band%[1]
+$line(78, 30, 78, 43, 0, 0, 0, 0.2)
+
+$text(86, 33, "‚l‚r ƒSƒVƒbƒN", 11, CM) Mode
+$text(86, 38, "‚l‚r –¾’©", 11, CT) %Mode%[1]
+
+$text(10, 44, "‚l‚r –¾’©", 10, LT) My QTH: %QTH_My%[1] (%CityCode_My%[1])
+$text(10, 49, "‚l‚r –¾’©", 10, LT) UR QTH: %QTH%[1] (%CityCode%[1])
+$text(10, 55, "‚l‚r –¾’©", 10, LT) Rig: %Rig_My%[1] (Power: %ScreenPwr_My% W)
+$text(10, 60, "‚l‚r –¾’©", 10, LT) Ant: %Ant_My%[1]
+
+//QSOƒf[ƒ^—“‡B
+$rect(6, 76, 88, 40, 0, 0, 0, 0.2)
+$line(10, 81, 94, 81, 0, 0, 0, 0.2)
+$line(10, 89, 94, 89, 0, 0, 0, 0.2)
+$line(10, 76, 10, 116, 0, 0, 0, 0.2)
+$text(8, 96, "‚l‚r ƒSƒVƒbƒN", 11, CM) ‡A
+$line_ifblank(6, 76, 94, 116, 0, 0, 0, 0.2, 2)
+
+$text(20, 79, "‚l‚r ƒSƒVƒbƒN", 11, CM) Date
+$text_date(20, 81, "‚l‚r –¾’©", 11, CT, , 2)
+$text_date(20, 89, "‚l‚r –¾’©", 11, CB, yyyy, 2)
+$line(33, 76, 33, 89, 0, 0, 0, 0.2)
+
+$text(41, 79, "‚l‚r ƒSƒVƒbƒN", 11, CM) Time
+$text(41, 81, "‚l‚r –¾’©", 11, CT) %Time_HHmm%[2]
+$text(41, 89, "‚l‚r –¾’©", 11, CB) %ScreenTimeZone%[2]
+$line(48, 76, 48, 89, 0, 0, 0, 0.2)
+
+$text(53, 79, "‚l‚r ƒSƒVƒbƒN", 11, CM) RST
+$text(53, 84, "‚l‚r –¾’©", 11, CT) %RS_His%[2]
+$line(58, 76, 58, 89, 0, 0, 0, 0.2)
+
+$text(68, 79, "‚l‚r ƒSƒVƒbƒN", 11, CM) Band
+$text(68, 84, "‚l‚r –¾’©", 11, CT) %Band%[2]
+$line(78, 76, 78, 89, 0, 0, 0, 0.2)
+
+$text(86, 79, "‚l‚r ƒSƒVƒbƒN", 11, CM) Mode
+$text(86, 84, "‚l‚r –¾’©", 11, CT) %Mode%[2]
+
+$text(10, 90, "‚l‚r –¾’©", 10, LT) MyQTH: %QTH_My%[2] (%CityCode_My%[2])
+$text(10, 95, "‚l‚r –¾’©", 10, LT) UR QTH: %QTH%[2] (%CityCode%[2])
+$text(10, 101, "‚l‚r –¾’©", 10, LT) Rig: %Rig_My%[2] (Power: %ScreenPwr_My%[2] W)
+$text(10, 106, "‚l‚r –¾’©", 10, LT) Ant: %Ant_My%[2]
+
