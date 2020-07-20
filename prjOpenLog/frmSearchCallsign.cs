@@ -106,11 +106,23 @@ namespace prjOpenLog {
 			else { return (base.ProcessDialogKey(keyData)); }
 		}
 
-		private void dgvSearch_CellContentClick(object sender, DataGridViewCellEventArgs e) {
+		//エラーメッセージ
+		public void ErrMsg(string Msg) {
+			MessageBox.Show(Msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
+		//QSO一覧をダブルクリック→編集
+		private void dgvSearch_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e) {
+			try {
+				cmsGrid_EditQSO_Click(sender, e);
+			} catch(Exception ex) { ErrMsg(ex.Message); }
+		}
+
+		private void cmsGrid_EditQSO_Click(object sender, EventArgs e) {
 			try {
 				if (dgvSearch.SelectedRows == null) { return; }
 				cQSO qso = dgvSearch.SelectedRows[0].DataBoundItem as cQSO;
-				if (qso == null) { return;			}
+				if (qso == null) { return; }
 
 				frmQSO fq = new frmQSO(qso, _fMain, _iColWidth, _sColName);
 				fq.Show();
@@ -120,11 +132,5 @@ namespace prjOpenLog {
 			}
 
 		}
-
-		//エラーメッセージ
-		public void ErrMsg(string Msg) {
-			MessageBox.Show(Msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
-
 	}
 }

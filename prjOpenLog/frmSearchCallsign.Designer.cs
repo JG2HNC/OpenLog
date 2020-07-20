@@ -33,6 +33,7 @@
 			this.cmsGrid = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.cmsGrid_Received = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGrid_Sent = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmsGrid_EditQSO = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dgvSearch)).BeginInit();
 			this.cmsGrid.SuspendLayout();
 			this.SuspendLayout();
@@ -79,7 +80,7 @@
 			this.dgvSearch.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
 			this.dgvSearch.Size = new System.Drawing.Size(561, 292);
 			this.dgvSearch.TabIndex = 2;
-			this.dgvSearch.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSearch_CellContentClick);
+			this.dgvSearch.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSearch_CellContentDoubleClick);
 			// 
 			// cmdOK
 			// 
@@ -108,9 +109,10 @@
 			this.cmsGrid.Font = new System.Drawing.Font("ＭＳ ゴシック", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.cmsGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmsGrid_Received,
-            this.cmsGrid_Sent});
+            this.cmsGrid_Sent,
+            this.cmsGrid_EditQSO});
 			this.cmsGrid.Name = "cmsGrid";
-			this.cmsGrid.Size = new System.Drawing.Size(195, 48);
+			this.cmsGrid.Size = new System.Drawing.Size(195, 92);
 			// 
 			// cmsGrid_Received
 			// 
@@ -125,6 +127,13 @@
 			this.cmsGrid_Sent.Size = new System.Drawing.Size(194, 22);
 			this.cmsGrid_Sent.Text = "QSL 発送 On/Off";
 			this.cmsGrid_Sent.Click += new System.EventHandler(this.cmsGrid_Sent_Click);
+			// 
+			// cmsGrid_EditQSO
+			// 
+			this.cmsGrid_EditQSO.Name = "cmsGrid_EditQSO";
+			this.cmsGrid_EditQSO.Size = new System.Drawing.Size(194, 22);
+			this.cmsGrid_EditQSO.Text = "QSOを編集";
+			this.cmsGrid_EditQSO.Click += new System.EventHandler(this.cmsGrid_EditQSO_Click);
 			// 
 			// frmSearchCallsign
 			// 
@@ -157,5 +166,6 @@
 		private System.Windows.Forms.ContextMenuStrip cmsGrid;
 		private System.Windows.Forms.ToolStripMenuItem cmsGrid_Received;
 		private System.Windows.Forms.ToolStripMenuItem cmsGrid_Sent;
+		private System.Windows.Forms.ToolStripMenuItem cmsGrid_EditQSO;
 	}
 }
