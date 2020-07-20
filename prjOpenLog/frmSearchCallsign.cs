@@ -13,15 +13,17 @@ using System.Data.SQLite;
 
 namespace prjOpenLog {
 	public partial class frmSearchCallsign : Form {
+		frmMain _fMain;
 		BindingList<cQSO> _blAllQSO;
 		BindingList<cQSO> _blResult;
 		BindingSource _bs;
-
 		int[] _iColWidth;
 		string[] _sColName;
-		public frmSearchCallsign(BindingList<cQSO> AllQSO, int[] ColWidth, string[] ColName) {
+
+		public frmSearchCallsign(frmMain MainForm, int[] ColWidth, string[] ColName) {
 			InitializeComponent();
-			_blAllQSO = AllQSO;
+			_fMain = MainForm;
+			_blAllQSO = MainForm.AllQSO;
 			_blResult = new BindingList<cQSO>();
 			_bs = new BindingSource();
 			_bs.DataSource = _blResult;
@@ -102,6 +104,26 @@ namespace prjOpenLog {
 		protected override bool ProcessDialogKey(Keys keyData) {
 			if (keyData == Keys.Enter) { return (true); }
 			else { return (base.ProcessDialogKey(keyData)); }
+		}
+
+		private void dgvSearch_CellContentClick(object sender, DataGridViewCellEventArgs e) {
+			try {
+				if (dgvSearch.SelectedRows == null) { return; }
+				cQSO qso = dgvSearch.SelectedRows[0].DataBoundItem as cQSO;
+				if (qso == null) { return;			}
+
+				frmQSO fq = new frmQSO(qso, _fMain, _iColWidth, _sColName);
+				fq.Show();
+			}
+			catch (Exception ex) {
+				ErrMsg(ex.Message);
+			}
+
+		}
+
+		//エラーメッセージ
+		public void ErrMsg(string Msg) {
+			MessageBox.Show(Msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 	}

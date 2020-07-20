@@ -28,14 +28,8 @@ namespace prjOpenLog {
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="QSO">編集・新規QSOオブジェクト</param>
-		/// <param name="AllQSO">全更新履歴</param>
-		/// <param name="DXCC">DXCCリスト</param>
-		/// <param name="CityCode">JCC/JCG+町村リスト</param>
-		/// <param name="Bands">バンド一覧</param>
-		/// <param name="Modes">モード一覧</param>
-		/// <param name="Config">設定</param>
-		public frmQSO(cQSO QSO, BindingList<cQSO> AllQSO, Dictionary<string, cDxcc> DXCC, Dictionary<string, cCity> CityCode, Dictionary<string, cBand> Bands, Dictionary<string, cMode> Modes, Dictionary<string, cDefaultRig> Default,int[] ColWidths, string[] ColNames, Config Config) {
-			_QSO = QSO; _blAllQSO = AllQSO; _dcDXCC = DXCC; _dcCityCode = CityCode; _dcBand = Bands; _dcMode = Modes; _dcDefault = Default; _cfg = Config;
+		public frmQSO(cQSO QSO, frmMain MainForm, int[] ColWidths, string[] ColNames) {
+			_QSO = QSO; _blAllQSO = MainForm.AllQSO; _dcDXCC = MainForm.DXCCList; _dcCityCode = MainForm.CityList; _dcBand = MainForm.BandList; _dcMode = MainForm.ModeList; _dcDefault =MainForm.DefaultRigList; _cfg = MainForm.Config;
 			_iColWidth = ColWidths; _sColName = ColNames;
 			InitializeComponent();
 		}

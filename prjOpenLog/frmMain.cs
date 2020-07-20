@@ -14,14 +14,42 @@ using System.Data.SQLite;
 
 namespace prjOpenLog {
 	public partial class frmMain : Form {
-		private Config _cfg;
 		private BindingSource _BS;
-		private BindingList<cQSO> _blQSOs;
-		private Dictionary<string, cDxcc> _dcDXCC;
-		private Dictionary<string, cCity> _dcCityCode;
-		private Dictionary<string, cBand> _dcBand;
-		private Dictionary<string, cMode> _dcMode;
-		private Dictionary<string, cDefaultRig> _dcDefault;
+
+		/// <summary>
+		/// Config
+		/// </summary>
+
+		public Config Config;
+		/// <summary>
+		/// 全QSO→メインフォーム(frmMain)のグリッドの内容
+		/// </summary>
+		public BindingList<cQSO> AllQSO { get; set; }
+
+		/// <summary>
+		/// DXCC一覧(Key:主要Prefix)
+		/// </summary>
+		public Dictionary<string, cDxcc> DXCCList { get; set; }
+
+		/// <summary>
+		/// 市区町村一覧(Key:市区町村番号; JCC/JCG+町村記号)
+		/// </summary>
+		public Dictionary<string, cCity> CityList { get; set; }
+
+		/// <summary>
+		/// 周波数帯一覧(Key:周波数名)
+		/// </summary>
+		public Dictionary<string, cBand> BandList { get; set; }
+
+		/// <summary>
+		/// 電波形式一覧(Key:電波形式 ex:CW)
+		/// </summary>
+		public Dictionary<string, cMode> ModeList { get; set; }
+
+		/// <summary>
+		/// 周波数帯ごとのDefaultのリグ・アンテナ(Key:周波数名)
+		/// </summary>
+		public Dictionary<string, cDefaultRig> DefaultRigList { get; set; }
 
 		/// <summary>
 		/// 正規表現パターンとDXCCエンティティ(Prefix)のペア
@@ -34,40 +62,40 @@ namespace prjOpenLog {
 		/// <param name="MyCallsign">自局コールサイン</param>
 		public frmMain(string MyCallsign) {
 			InitializeComponent();
-			_blQSOs = new BindingList<cQSO>();
+			AllQSO = new BindingList<cQSO>();
 			_BS = new BindingSource();
 
 			//ゆくゆくは設定ファイル・DBから取得する
-			_cfg = new Config();
-			_cfg.MyEntity = "JA"; //最終的には設定ファイルから読み取る
-			_cfg.MyCall = MyCallsign;
-			if(_cfg.MyCall == "") {
-				frmInputCallsign f = new frmInputCallsign(_cfg);
+			Config = new Config();
+			Config.MyEntity = "JA"; //最終的には設定ファイルから読み取る
+			Config.MyCall = MyCallsign;
+			if(Config.MyCall == "") {
+				frmInputCallsign f = new frmInputCallsign(Config);
 				f.ShowDialog();
 			}
-			_cfg.StartTick = DateTime.UtcNow.Ticks;
-			_cfg.DBpath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db");
-			_cfg.DPIscaleFactor = CreateGraphics().DpiX / 96d;
-			_cfg.UseDefaultRig = true;
+			Config.StartTick = DateTime.UtcNow.Ticks;
+			Config.DBpath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "db");
+			Config.DPIscaleFactor = CreateGraphics().DpiX / 96d;
+			Config.UseDefaultRig = true;
 
 			//エンティティ、JCC/JCG、バンド、モード
-			_dcDXCC = new Dictionary<string, cDxcc>();
-			_dcCityCode = new Dictionary<string, cCity>();
-			_dcBand = new Dictionary<string, cBand>();
-			_dcMode = new Dictionary<string, cMode>();
+			DXCCList = new Dictionary<string, cDxcc>();
+			CityList = new Dictionary<string, cCity>();
+			BandList = new Dictionary<string, cBand>();
+			ModeList = new Dictionary<string, cMode>();
 
 			//初期設定のRig・Ant→コールサインDBから取得
-			_dcDefault = new Dictionary<string, cDefaultRig>();
+			DefaultRigList = new Dictionary<string, cDefaultRig>();
 		}
 
 		private void frmMain_Load(object sender, EventArgs e) {
-			if(_cfg.MyCall == "") { ErrMsg("コールサインが未設定です。\n一旦アプリを終了します。アプリを再起動して、コールサインを入力してください。"); }
+			if(Config.MyCall == "") { ErrMsg("コールサインが未設定です。\n一旦アプリを終了します。アプリを再起動して、コールサインを入力してください。"); }
 
 
 			#region "DXCC・JCC/JCG・バンド・モード取得"
 			try {
-				string sPropDb = Path.Combine(_cfg.DBpath, "PropertyList.db");
-				if (!Directory.Exists(_cfg.DBpath)) { ErrMsg(string.Format("Error: Not exist Directory \"{0}\"", _cfg.DBpath)); return; }
+				string sPropDb = Path.Combine(Config.DBpath, "PropertyList.db");
+				if (!Directory.Exists(Config.DBpath)) { ErrMsg(string.Format("Error: Not exist Directory \"{0}\"", Config.DBpath)); return; }
 				if (!File.Exists(sPropDb)) { ErrMsg("Error: Not exist \"PropertyList.db\""); return; }
 				#region "DXCC, JCC/JCG, Band, Mode, DefaultRig(Key・空の値のみ)"
 				using (SQLiteConnection con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", sPropDb))) {
@@ -84,7 +112,7 @@ namespace prjOpenLog {
 							int iECode;
 							if(!int.TryParse(dr["EntityCode"].ToString(), out iECode)) { ErrMsg("Error: DXCC Entityのフォーマットが不正です。"); return; }
 
-							_dcDXCC.Add(sDxcc, new cDxcc(sDxcc, sName, sPats, iECode));
+							DXCCList.Add(sDxcc, new cDxcc(sDxcc, sName, sPats, iECode));
 						}
 					}
 
@@ -98,7 +126,7 @@ namespace prjOpenLog {
 							string sA = dr["Area"].ToString();
 							string sN = dr["Name"].ToString();
 							string sS = dr["Search"].ToString();
-							_dcCityCode.Add(sDc, new cCity(sDc, sC2, sA, sN, sS));
+							CityList.Add(sDc, new cCity(sDc, sC2, sA, sN, sS));
 						}
 					}
 
@@ -111,10 +139,10 @@ namespace prjOpenLog {
 							string sBL = dr["BandL"].ToString();
 							double dL = double.Parse(dr["Lower"].ToString());
 							double dU = double.Parse(dr["Upper"].ToString());
-							_dcBand.Add(sBF, new cBand(sBF, sBL, dL, dU));
+							BandList.Add(sBF, new cBand(sBF, sBL, dL, dU));
 
 							//初期設定のRig・Ant→Keyのみ登録
-							_dcDefault.Add(sBF, new cDefaultRig(sBF));
+							DefaultRigList.Add(sBF, new cDefaultRig(sBF));
 						}
 					}
 
@@ -126,7 +154,7 @@ namespace prjOpenLog {
 							string sMd = dr["Mode"].ToString();
 							string sCt = dr["Category"].ToString();
 							string sTp = dr["Type"].ToString();
-							_dcMode.Add(sMd, new cMode(sMd, sCt, sTp));
+							ModeList.Add(sMd, new cMode(sMd, sCt, sTp));
 						}
 					}
 				}
@@ -139,7 +167,7 @@ namespace prjOpenLog {
 			}
 			#endregion
 
-			string sQOsDb = Path.Combine(_cfg.DBpath, string.Format("{0}.db", _cfg.MyCall.ToUpper()));
+			string sQOsDb = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
 			dgvMain.SuspendLayout();
 			#region "QSO DB①"
 			//DBなし→空のDBを作成
@@ -188,7 +216,7 @@ namespace prjOpenLog {
 									else if (pp.PropertyType == typeof(bool)) { pp.SetValue(q, Convert.ToBoolean(int.Parse(sVal))); }
 								}
 								#endregion
-								_blQSOs.Add(q);
+								AllQSO.Add(q);
 							}
 						}
 						con.Close();
@@ -217,7 +245,7 @@ namespace prjOpenLog {
 				}
 				#endregion
 
-				string sQSODb = Path.Combine(_cfg.DBpath, string.Format("{0}.db", _cfg.MyCall.ToUpper()));
+				string sQSODb = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
 				using (SQLiteConnection con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", sQSODb))) {
 					con.Open();
 					using (SQLiteTransaction st = con.BeginTransaction())
@@ -228,7 +256,7 @@ namespace prjOpenLog {
 
 						System.Reflection.PropertyInfo[] pi = typeof(cDefaultRig).GetProperties();
 						lsFlds.Add("[BandF]");
-						foreach (string sB in _dcDefault.Keys) {
+						foreach (string sB in DefaultRigList.Keys) {
 							cmd.CommandText = string.Format("select {0} from [T_DefaultRig] where [BandF] = '{1}';", string.Join(",", lsFlds), sB);
 							using (SQLiteDataReader dr = cmd.ExecuteReader()) {
 								while (dr.Read()) {
@@ -238,7 +266,7 @@ namespace prjOpenLog {
 										string sVal = dr[sFn].ToString();
 										if (!pi[i].CanWrite) { continue; } //書込不可プロパティは飛ばす(他プロパティから表示用を生成)
 										var pp = typeof(cDefaultRig).GetProperty(sFn);
-										pp.SetValue(_dcDefault[sB], sVal);
+										pp.SetValue(DefaultRigList[sB], sVal);
 									}
 								}
 							}
@@ -257,42 +285,42 @@ namespace prjOpenLog {
 			#endregion
 
 			try {
-				_BS.DataSource = _blQSOs;
+				_BS.DataSource = AllQSO;
 				dgvMain.DataSource = _BS;
 
 				#region "DataGridView制御"
 				dgvMain.RowHeadersVisible = false;
-				dgvMain.Columns["ID"].Width = (int)(_cfg.DPIscaleFactor * 55);
-				dgvMain.Columns["ScreenQSLMethod"].Width = (int)(_cfg.DPIscaleFactor * 20);
-				dgvMain.Columns["ScreenCardSend"].Width = (int)(_cfg.DPIscaleFactor * 20);
-				dgvMain.Columns["ScreenCardReceive"].Width = (int)(_cfg.DPIscaleFactor * 20);
-				dgvMain.Columns["ScreenDate"].Width = (int)(_cfg.DPIscaleFactor * 95);
-				dgvMain.Columns["ScreenTime"].Width = (int)(_cfg.DPIscaleFactor * 75);
-				dgvMain.Columns["ScreenTimeZone"].Width = (int)(_cfg.DPIscaleFactor * 35);
-				dgvMain.Columns["ScreenCall"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["RS_His"].Width = (int)(_cfg.DPIscaleFactor * 40);
-				dgvMain.Columns["RS_My"].Width = (int)(_cfg.DPIscaleFactor * 40);
-				dgvMain.Columns["Freq"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["Mode"].Width = (int)(_cfg.DPIscaleFactor * 50);
-				dgvMain.Columns["ScreenPwr_My"].Width = (int)(_cfg.DPIscaleFactor * 30);
-				dgvMain.Columns["QRA"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["QTH"].Width = (int)(_cfg.DPIscaleFactor * 200);
-				dgvMain.Columns["DXCC"].Width = (int)(_cfg.DPIscaleFactor * 60);
-				dgvMain.Columns["CityCode"].Width = (int)(_cfg.DPIscaleFactor * 80);
-				dgvMain.Columns["GL"].Width = (int)(_cfg.DPIscaleFactor * 60);
-				dgvMain.Columns["QTH_h"].Width = (int)(_cfg.DPIscaleFactor * 200);
-				dgvMain.Columns["QSLManager"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["Rig_His"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["Ant_His"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["ScreenPwr_His"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["Rig_My"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["Ant_My"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["QTH_My"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["Prefix_My"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["CityCode_My"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["GL_My"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["CardMsg"].Width = (int)(_cfg.DPIscaleFactor * 100);
-				dgvMain.Columns["Remarks"].Width = (int)(_cfg.DPIscaleFactor * 100);
+				dgvMain.Columns["ID"].Width = (int)(Config.DPIscaleFactor * 55);
+				dgvMain.Columns["ScreenQSLMethod"].Width = (int)(Config.DPIscaleFactor * 20);
+				dgvMain.Columns["ScreenCardSend"].Width = (int)(Config.DPIscaleFactor * 20);
+				dgvMain.Columns["ScreenCardReceive"].Width = (int)(Config.DPIscaleFactor * 20);
+				dgvMain.Columns["ScreenDate"].Width = (int)(Config.DPIscaleFactor * 95);
+				dgvMain.Columns["ScreenTime"].Width = (int)(Config.DPIscaleFactor * 75);
+				dgvMain.Columns["ScreenTimeZone"].Width = (int)(Config.DPIscaleFactor * 35);
+				dgvMain.Columns["ScreenCall"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["RS_His"].Width = (int)(Config.DPIscaleFactor * 40);
+				dgvMain.Columns["RS_My"].Width = (int)(Config.DPIscaleFactor * 40);
+				dgvMain.Columns["Freq"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["Mode"].Width = (int)(Config.DPIscaleFactor * 50);
+				dgvMain.Columns["ScreenPwr_My"].Width = (int)(Config.DPIscaleFactor * 30);
+				dgvMain.Columns["QRA"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["QTH"].Width = (int)(Config.DPIscaleFactor * 200);
+				dgvMain.Columns["DXCC"].Width = (int)(Config.DPIscaleFactor * 60);
+				dgvMain.Columns["CityCode"].Width = (int)(Config.DPIscaleFactor * 80);
+				dgvMain.Columns["GL"].Width = (int)(Config.DPIscaleFactor * 60);
+				dgvMain.Columns["QTH_h"].Width = (int)(Config.DPIscaleFactor * 200);
+				dgvMain.Columns["QSLManager"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["Rig_His"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["Ant_His"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["ScreenPwr_His"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["Rig_My"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["Ant_My"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["QTH_My"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["Prefix_My"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["CityCode_My"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["GL_My"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["CardMsg"].Width = (int)(Config.DPIscaleFactor * 100);
+				dgvMain.Columns["Remarks"].Width = (int)(Config.DPIscaleFactor * 100);
 
 				dgvMain.Columns["ScreenQSLMethod"].HeaderText = "Q";
 				dgvMain.Columns["ScreenCardSend"].HeaderText = "S";
@@ -361,9 +389,9 @@ namespace prjOpenLog {
 
 		private void mnuAddNewQSO_Click(object sender, EventArgs e) {
 			List<cQSO> lsAllQSO = new List<cQSO>();
-			foreach(cQSO q in _blQSOs) { lsAllQSO.Add(q); }
+			foreach(cQSO q in AllQSO) { lsAllQSO.Add(q); }
 			cQSO NewQSO;
-			if(0 < _blQSOs.Count) { NewQSO = new cQSO(_blQSOs[_blQSOs.Count - 1]); }
+			if(0 < AllQSO.Count) { NewQSO = new cQSO(AllQSO[AllQSO.Count - 1]); }
 			else { NewQSO = new cQSO(); }
 			int[] iColW = new int[dgvMain.ColumnCount];
 			string[] sColN = new string[dgvMain.ColumnCount];
@@ -372,7 +400,7 @@ namespace prjOpenLog {
 				else { iColW[i] = -1; sColN[i] = "N/A"; }
 			}
 
-			frmQSO f = new frmQSO(NewQSO, _blQSOs,  _dcDXCC, _dcCityCode, _dcBand, _dcMode, _dcDefault, iColW, sColN, _cfg);
+			frmQSO f = new frmQSO(NewQSO, this,  iColW, sColN);
 			f.Show();
 		}
 
@@ -382,8 +410,8 @@ namespace prjOpenLog {
 				if(dgvMain.SelectedRows == null) { return; }
 				cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
 				if(qso == null) {
-					if(_blQSOs.Count == 0) { qso = new cQSO(); }
-					else { qso = new cQSO(_blQSOs[_blQSOs.Count - 1]); }
+					if(AllQSO.Count == 0) { qso = new cQSO(); }
+					else { qso = new cQSO(AllQSO[AllQSO.Count - 1]); }
 				}
 
 				int[] iColW = new int[dgvMain.ColumnCount];
@@ -393,7 +421,7 @@ namespace prjOpenLog {
 					else { iColW[i] = -1; sColN[i] = "N/A"; }
 				}
 
-				frmQSO fq = new frmQSO(qso, _blQSOs, _dcDXCC, _dcCityCode, _dcBand, _dcMode, _dcDefault, iColW, sColN, _cfg);
+				frmQSO fq = new frmQSO(qso, this, iColW, sColN);
 				fq.Show();
 			}
 			catch(Exception ex) {
@@ -410,19 +438,19 @@ namespace prjOpenLog {
 
 		private void mnuFilePrintCard_Click(object sender, EventArgs e) {
 			List<cQSO> lsPrint = new List<cQSO>();
-			foreach(cQSO q in _blQSOs) {
+			foreach(cQSO q in AllQSO) {
 				if(!q.Card_Send && q.QSLMethod != (int)cQSO.enQSLMethod.N && q.QSLMethod != (int)cQSO.enQSLMethod.R) { lsPrint.Add(q); }
 			}
-			frmPrintCards fp = new frmPrintCards(lsPrint, _dcMode);
+			frmPrintCards fp = new frmPrintCards(lsPrint, ModeList);
 			fp.ShowDialog();
 		}
 
 		private void mnuFilePrintStation_Click(object sender, EventArgs e) {
 			List<cQSO> lsPrint = new List<cQSO>();
-			foreach (cQSO q in _blQSOs) {
+			foreach (cQSO q in AllQSO) {
 				if (!q.Card_Send && q.QSLMethod != (int)cQSO.enQSLMethod.N && q.QSLMethod != (int)cQSO.enQSLMethod.R) { lsPrint.Add(q); }
 			}
-			frmPrintStation fs = new frmPrintStation(lsPrint, _dcMode);
+			frmPrintStation fs = new frmPrintStation(lsPrint, ModeList);
 			fs.Show();
 		}
 
@@ -458,9 +486,9 @@ namespace prjOpenLog {
 			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
 			if (qso == null) { return; }
 			int iD = qso.ID;
-			_blQSOs.Remove(qso);
+			AllQSO.Remove(qso);
 			if(0 <= iD) {
-				string sQSODb = Path.Combine(_cfg.DBpath, string.Format("{0}.db", _cfg.MyCall.ToUpper()));
+				string sQSODb = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
 				try {
 					System.Reflection.PropertyInfo[] piQSO = typeof(cQSO).GetProperties();
 					using (SQLiteConnection con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", sQSODb))) {
@@ -487,7 +515,7 @@ namespace prjOpenLog {
 			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
 			if (qso == null) { return; }
 
-			frmPrintCards fp = new frmPrintCards(new List<cQSO>() { qso }, _dcMode);
+			frmPrintCards fp = new frmPrintCards(new List<cQSO>() { qso }, ModeList);
 			fp.ShowDialog();
 		}
 
@@ -502,7 +530,7 @@ namespace prjOpenLog {
 				else { iColW[i] = -1; sColN[i] = "N/A"; }
 			}
 
-			frmSearchCallsign f = new frmSearchCallsign(_blQSOs, iColW, sColN);
+			frmSearchCallsign f = new frmSearchCallsign(this, iColW, sColN);
 			f.ShowDialog();
 		}
 
@@ -515,7 +543,7 @@ namespace prjOpenLog {
 				else { iHead[i] = -1; }
 				sHead[i] = dgvMain.Columns[i].HeaderText;
 			}
-			frmInportLogcs f = new frmInportLogcs(_blQSOs, iHead, sHead, _dcBand);
+			frmInportLogcs f = new frmInportLogcs(AllQSO, iHead, sHead, BandList);
 			f.ShowDialog();
 		}
 
@@ -527,13 +555,13 @@ namespace prjOpenLog {
 				else { iColW[i] = -1; sColN[i] = "N/A"; }
 			}
 
-			frmInport f = new frmInport(_blQSOs, _dcDXCC, _dcCityCode, _dcBand, _dcMode, _dcDefault, iColW, sColN, _cfg);
+			frmInport f = new frmInport(this, iColW, sColN);
 			f.ShowDialog();
 		}
 
 		private void mnuMain_ToolsSortDT_Click(object sender, EventArgs e) {
-			string sQSODb = Path.Combine(_cfg.DBpath, string.Format("{0}.db", _cfg.MyCall.ToUpper()));
-			string sOldDB = Path.Combine(_cfg.DBpath, string.Format("{0}_old.db", _cfg.MyCall.ToUpper()));
+			string sQSODb = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
+			string sOldDB = Path.Combine(Config.DBpath, string.Format("{0}_old.db", Config.MyCall.ToUpper()));
 			List<cQSO> lsQSO = new List<cQSO>();
 			#region "ソート準備"
 			try {
@@ -544,16 +572,16 @@ namespace prjOpenLog {
 
 				bool bBandErr = false; //バンド名称エラー
 				#region "ソート用リスト作成&バンドチェック"
-				foreach (cQSO q in _blQSOs) {
-					if (!_dcBand.ContainsKey(q.Band)) { bBandErr = true; }
+				foreach (cQSO q in AllQSO) {
+					if (!BandList.ContainsKey(q.Band)) { bBandErr = true; }
 					lsQSO.Add(q);
 				}
 
 				if (bBandErr) {
 					if (MessageBox.Show("周波数帯を修正しますか?", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes) {
 						foreach (cQSO q in lsQSO) {
-							foreach (string sB in _dcBand.Keys) {
-								if(_dcBand[sB].Lower <= q.Freq && q.Freq <= _dcBand[sB].Upper) { q.Band = sB; break; }
+							foreach (string sB in BandList.Keys) {
+								if(BandList[sB].Lower <= q.Freq && q.Freq <= BandList[sB].Upper) { q.Band = sB; break; }
 							}
 						}
 					}
@@ -573,11 +601,11 @@ namespace prjOpenLog {
 			#region "ソート結果をBindingList & DBに登録"
 			try {
 				dgvMain.SuspendLayout();
-				_blQSOs.Clear();
+				AllQSO.Clear();
 				for (int i = 0; i < lsQSO.Count; i++) {
 					cQSO q = lsQSO[i];
 					q.ID = -1;//i + 1;
-					_blQSOs.Add(q);
+					AllQSO.Add(q);
 				}
 				SaveToDb();
 			}
@@ -595,7 +623,7 @@ namespace prjOpenLog {
 						cmd.CommandText = "delete from  [T_DefaultRig]";
 						cmd.ExecuteNonQuery();
 						
-						foreach (cDefaultRig df in _dcDefault.Values) {
+						foreach (cDefaultRig df in DefaultRigList.Values) {
 							cmd.CommandText = string.Format("INSERT INTO [T_DefaultRig]([BandF], [RigHome], [AntHome], [RigMobile], [AntMobile]) VALUES('{0}','{1}','{2}','{3}','{4}');", df.BandF, df.RigHome, df.AntHome, df.RigMobile, df.AntMobile);
 							int iRes = cmd.ExecuteNonQuery();
 						}
@@ -626,8 +654,8 @@ namespace prjOpenLog {
 			GC.WaitForPendingFinalizers();
 
 			try {
-				sfd.InitialDirectory = _cfg.DBpath;
-				sfd.FileName = string.Format("{0}_{1:yyyyMMdd}-{1:HHmm}.zip", _cfg.MyCall, DateTime.Now);
+				sfd.InitialDirectory = Config.DBpath;
+				sfd.FileName = string.Format("{0}_{1:yyyyMMdd}-{1:HHmm}.zip", Config.MyCall, DateTime.Now);
 				sfd.Filter = "Zipファイル(*.zip)|*.zip|すべてのファイル(*.*)|*.*";
 				sfd.OverwritePrompt = true;
 				if(sfd.ShowDialog() == DialogResult.OK) {
@@ -635,8 +663,8 @@ namespace prjOpenLog {
 					GC.WaitForPendingFinalizers();
 					if (File.Exists(sfd.FileName)) { File.Delete(sfd.FileName); }
 					using (ZipArchive za = ZipFile.Open(sfd.FileName, ZipArchiveMode.Create)) {
-						za.CreateEntryFromFile(Path.Combine(_cfg.DBpath, _cfg.MyCall + ".db"), _cfg.MyCall + ".db", CompressionLevel.Fastest);
-						za.CreateEntryFromFile(Path.Combine(_cfg.DBpath, "PropertyList.db"), "PropertyList.db", CompressionLevel.Fastest);
+						za.CreateEntryFromFile(Path.Combine(Config.DBpath, Config.MyCall + ".db"), Config.MyCall + ".db", CompressionLevel.Fastest);
+						za.CreateEntryFromFile(Path.Combine(Config.DBpath, "PropertyList.db"), "PropertyList.db", CompressionLevel.Fastest);
 					}
 				}
 			}
@@ -646,24 +674,24 @@ namespace prjOpenLog {
 		}
 
 		private void mnuMain_ToolsEditBands_Click(object sender, EventArgs e) {
-			frmEditBand fb = new frmEditBand(_dcBand, Path.Combine(_cfg.DBpath, "PropertyList.db"));
+			frmEditBand fb = new frmEditBand(BandList, Path.Combine(Config.DBpath, "PropertyList.db"));
 			fb.ShowDialog();
 		}
 
 		private void mnuMain_ToolsEditDxcc_Click(object sender, EventArgs e) {
-			frmEditDXCC fd = new frmEditDXCC(_dcDXCC, Path.Combine(_cfg.DBpath, "PropertyList.db"));
+			frmEditDXCC fd = new frmEditDXCC(DXCCList, Path.Combine(Config.DBpath, "PropertyList.db"));
 			fd.ShowDialog();
 		}
 
 		private void mnuMain_ToolsEditCity_Click(object sender, EventArgs e) {
-			frmEditCity fc = new frmEditCity(_dcCityCode, Path.Combine(_cfg.DBpath, "PropertyList.db"));
+			frmEditCity fc = new frmEditCity(CityList, Path.Combine(Config.DBpath, "PropertyList.db"));
 			fc.ShowDialog();
 		}
 
 
 		private void mnuMain_ToolsEditRigAnt_Click(object sender, EventArgs e) {
-			string sDB = Path.Combine(_cfg.DBpath, string.Format("{0}.db", _cfg.MyCall.ToUpper()));
-			frmEditDefaultRig fd = new frmEditDefaultRig(_dcDefault, sDB);
+			string sDB = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
+			frmEditDefaultRig fd = new frmEditDefaultRig(DefaultRigList, sDB);
 			fd.ShowDialog();
 		}
 
@@ -703,7 +731,7 @@ namespace prjOpenLog {
 			}
 			#endregion
 
-			string sQSODb = Path.Combine(_cfg.DBpath, string.Format("{0}.db", _cfg.MyCall.ToUpper()));
+			string sQSODb = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
 			#region "DBを作成する"
 			using (SQLiteConnection con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", sQSODb))) {
 				con.Open();
@@ -739,13 +767,13 @@ namespace prjOpenLog {
 			List<cQSO> lsInsert = new List<cQSO>(); //新規
 			List<cQSO> lsUpdate = new List<cQSO>(); //更新
 			#region "新規・更新の抽出"
-			foreach (cQSO q in _blQSOs) {
+			foreach (cQSO q in AllQSO) {
 				if (q.ID < 0) { lsInsert.Add(q); }
-				else if (_cfg.StartTick < q.LastUpdate) { lsUpdate.Add(q); }
+				else if (Config.StartTick < q.LastUpdate) { lsUpdate.Add(q); }
 			}
 			#endregion
 
-			string sQSODb = Path.Combine(_cfg.DBpath, string.Format("{0}.db", _cfg.MyCall.ToUpper()));
+			string sQSODb = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
 			try {
 				System.Reflection.PropertyInfo[] piQSO = typeof(cQSO).GetProperties();
 				using (SQLiteConnection con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", sQSODb))) {
@@ -820,7 +848,7 @@ namespace prjOpenLog {
 						#endregion
 
 						st.Commit();
-						_cfg.StartTick = DateTime.UtcNow.Ticks;
+						Config.StartTick = DateTime.UtcNow.Ticks;
 					}
 					con.Close();
 				}
@@ -838,7 +866,7 @@ namespace prjOpenLog {
 		/// </summary>
 		private void CountCard() {
 			int iCn = 0;
-			foreach (cQSO q in _blQSOs) {
+			foreach (cQSO q in AllQSO) {
 				if (q.Card_Send) { continue; }
 				if (q.QSLMethod == (int)cQSO.enQSLMethod.N) { continue; }
 				if (q.QSLMethod == (int)cQSO.enQSLMethod.R) { continue; }
