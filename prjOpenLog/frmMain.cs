@@ -14,12 +14,14 @@ using System.Data.SQLite;
 
 namespace prjOpenLog {
 	public partial class frmMain : Form {
+
+		public const string CommonDbFile = "Common.db";
+
 		private BindingSource _BS;
 
 		/// <summary>
 		/// Config
 		/// </summary>
-
 		public Config Config;
 		/// <summary>
 		/// 全QSO→メインフォーム(frmMain)のグリッドの内容
@@ -55,6 +57,36 @@ namespace prjOpenLog {
 		/// 正規表現パターンとDXCCエンティティ(Prefix)のペア
 		/// </summary>
 		public List<string[]> PatsDXCC { get; }
+
+		/// <summary>
+		/// MainFormのGridの列ヘッダ(文字列)
+		/// </summary>
+		public string[] GridColNames {
+			get {
+				int[] iColW = new int[dgvMain.ColumnCount];
+				string[] sColN = new string[dgvMain.ColumnCount];
+				for (int i = 0; i < iColW.Length; i++) {
+					if (dgvMain.Columns[i].Visible) { iColW[i] = dgvMain.Columns[i].Width; sColN[i] = dgvMain.Columns[i].HeaderText; }
+					else { iColW[i] = -1; sColN[i] = "N/A"; }
+				}
+				return (sColN);
+			}
+		}
+
+		/// <summary>
+		/// MainFormのGridの列ヘッダ(幅)
+		/// </summary>
+		public int[] GridColWidth {
+			get {
+				int[] iColW = new int[dgvMain.ColumnCount];
+				string[] sColN = new string[dgvMain.ColumnCount];
+				for (int i = 0; i < iColW.Length; i++) {
+					if (dgvMain.Columns[i].Visible) { iColW[i] = dgvMain.Columns[i].Width; sColN[i] = dgvMain.Columns[i].HeaderText; }
+					else { iColW[i] = -1; sColN[i] = "N/A"; }
+				}
+				return (iColW);
+			}
+		}
 
 		/// <summary>
 		/// コンストラクタ
@@ -94,9 +126,9 @@ namespace prjOpenLog {
 
 			#region "DXCC・JCC/JCG・バンド・モード取得"
 			try {
-				string sPropDb = Path.Combine(Config.DBpath, "PropertyList.db");
+				string sPropDb = Path.Combine(Config.DBpath, CommonDbFile);
 				if (!Directory.Exists(Config.DBpath)) { ErrMsg(string.Format("Error: Not exist Directory \"{0}\"", Config.DBpath)); return; }
-				if (!File.Exists(sPropDb)) { ErrMsg("Error: Not exist \"PropertyList.db\""); return; }
+				if (!File.Exists(sPropDb)) { ErrMsg(string.Format("Error: Not exist \"{0}\"", frmMain.CommonDbFile)); return; }
 				#region "DXCC, JCC/JCG, Band, Mode, DefaultRig(Key・空の値のみ)"
 				using (SQLiteConnection con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", sPropDb))) {
 					con.Open();
@@ -162,7 +194,7 @@ namespace prjOpenLog {
 
 			}
 			catch (Exception ex) {
-				ErrMsg("Reading property.\n" + ex.Message);
+				ErrMsg("Reading CommonDB.\n" + ex.Message);
 				return;
 			}
 			#endregion
@@ -387,11 +419,20 @@ namespace prjOpenLog {
 			CountCard();
 		}
 
+		private void frmMain_FormClosing(object sender, FormClosingEventArgs e) {
+			SaveToDb();
+		}
+
+		private void frmMain_FormClosed(object sender, FormClosedEventArgs e) {
+			Dispose();
+		}
+
+		#region "Menu-File"
 		private void mnuAddNewQSO_Click(object sender, EventArgs e) {
 			List<cQSO> lsAllQSO = new List<cQSO>();
-			foreach(cQSO q in AllQSO) { lsAllQSO.Add(q); }
+			foreach (cQSO q in AllQSO) { lsAllQSO.Add(q); }
 			cQSO NewQSO;
-			if(0 < AllQSO.Count) { NewQSO = new cQSO(AllQSO[AllQSO.Count - 1]); }
+			if (0 < AllQSO.Count) { NewQSO = new cQSO(AllQSO[AllQSO.Count - 1]); }
 			else { NewQSO = new cQSO(); }
 			int[] iColW = new int[dgvMain.ColumnCount];
 			string[] sColN = new string[dgvMain.ColumnCount];
@@ -400,48 +441,20 @@ namespace prjOpenLog {
 				else { iColW[i] = -1; sColN[i] = "N/A"; }
 			}
 
-			frmQSO f = new frmQSO(NewQSO, this,  iColW, sColN);
+			frmQSO f = new frmQSO(NewQSO, this);
 			f.Show();
-		}
-
-		//QSOをダブルクリック
-		private void dgvMain_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
-			try {
-				if(dgvMain.SelectedRows == null) { return; }
-				cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
-				if(qso == null) {
-					if(AllQSO.Count == 0) { qso = new cQSO(); }
-					else { qso = new cQSO(AllQSO[AllQSO.Count - 1]); }
-				}
-
-				int[] iColW = new int[dgvMain.ColumnCount];
-				string[] sColN = new string[dgvMain.ColumnCount];
-				for (int i = 0; i < iColW.Length; i++) {
-					if (dgvMain.Columns[i].Visible) { iColW[i] = dgvMain.Columns[i].Width; sColN[i] = dgvMain.Columns[i].HeaderText; }
-					else { iColW[i] = -1; sColN[i] = "N/A"; }
-				}
-
-				frmQSO fq = new frmQSO(qso, this, iColW, sColN);
-				fq.Show();
-			}
-			catch(Exception ex) {
-				ErrMsg(ex.Message);
-			}
 		}
 
 		private void mnuSaveDB_Click(object sender, EventArgs e) {
 			SaveToDb();
 		}
-		private void frmMain_FormClosing(object sender, FormClosingEventArgs e) {
-			SaveToDb();
-		}
 
 		private void mnuFilePrintCard_Click(object sender, EventArgs e) {
 			List<cQSO> lsPrint = new List<cQSO>();
-			foreach(cQSO q in AllQSO) {
-				if(!q.Card_Send && q.QSLMethod != (int)cQSO.enQSLMethod.N && q.QSLMethod != (int)cQSO.enQSLMethod.R) { lsPrint.Add(q); }
+			foreach (cQSO q in AllQSO) {
+				if (!q.Card_Send && q.QSLMethod != (int)cQSO.enQSLMethod.N && q.QSLMethod != (int)cQSO.enQSLMethod.R) { lsPrint.Add(q); }
 			}
-			frmPrintCards fp = new frmPrintCards(lsPrint, ModeList);
+			frmPrintCards fp = new frmPrintCards(lsPrint, this);
 			fp.ShowDialog();
 		}
 
@@ -450,78 +463,13 @@ namespace prjOpenLog {
 			foreach (cQSO q in AllQSO) {
 				if (!q.Card_Send && q.QSLMethod != (int)cQSO.enQSLMethod.N && q.QSLMethod != (int)cQSO.enQSLMethod.R) { lsPrint.Add(q); }
 			}
-			frmPrintStation fs = new frmPrintStation(lsPrint, ModeList);
+			frmPrintStation fs = new frmPrintStation(lsPrint, this);
 			fs.Show();
 		}
 
-		#region "Context menu"
-		private void cmsGrid_Received_Click(object sender, EventArgs e) {
-			if (dgvMain.SelectedRows == null) { return; }
-			if (dgvMain.SelectedRows.Count == 0) { return; }
-			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
-			if (qso == null) { return; }
-
-			if (qso.Card_Resv) { qso.Card_Resv = false; }
-			else { qso.Card_Resv = true; }
-			qso.LastUpdate = DateTime.UtcNow.Ticks;
-			SaveToDb();
-		}
-
-		private void cmsGrid_Sent_Click(object sender, EventArgs e) {
-			if (dgvMain.SelectedRows == null) { return; }
-			if (dgvMain.SelectedRows.Count == 0) { return; }
-			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
-			if (qso == null) { return; }
-
-			if (qso.Card_Send) { qso.Card_Send = false; }
-			else { qso.Card_Send = true; }
-			qso.LastUpdate = DateTime.UtcNow.Ticks;
-			SaveToDb();
-			CountCard();
-		}
-
-		private void cmsGrid_Remove_Click(object sender, EventArgs e) {
-			if (dgvMain.SelectedRows == null) { return; }
-			if (dgvMain.SelectedRows.Count == 0) { return; }
-			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
-			if (qso == null) { return; }
-			int iD = qso.ID;
-			AllQSO.Remove(qso);
-			if(0 <= iD) {
-				string sQSODb = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
-				try {
-					System.Reflection.PropertyInfo[] piQSO = typeof(cQSO).GetProperties();
-					using (SQLiteConnection con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", sQSODb))) {
-						con.Open();
-						using (SQLiteTransaction st = con.BeginTransaction())
-						using (SQLiteCommand cmd = con.CreateCommand()) {
-							cmd.CommandText = string.Format("delete from [T_QSO] where [ID] = {0}", iD);
-							cmd.ExecuteNonQuery();
-							st.Commit();
-						}
-					}
-				}
-				catch (Exception ex) {
-					ErrMsg("Error: Saving QSO to DB.\n" + ex.Message);
-				}
-
-
-			}
-		}
-
-		private void cmsGrid_Print_Click(object sender, EventArgs e) {
-			if (dgvMain.SelectedRows == null) { return; }
-			if (dgvMain.SelectedRows.Count == 0) { return; }
-			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
-			if (qso == null) { return; }
-
-			frmPrintCards fp = new frmPrintCards(new List<cQSO>() { qso }, ModeList);
-			fp.ShowDialog();
-		}
-
-
 		#endregion
 
+		#region "Menu-Search"
 		private void mnuSearchCallsign_Click(object sender, EventArgs e) {
 			int[] iColW = new int[dgvMain.ColumnCount];
 			string[] sColN = new string[dgvMain.ColumnCount];
@@ -530,10 +478,13 @@ namespace prjOpenLog {
 				else { iColW[i] = -1; sColN[i] = "N/A"; }
 			}
 
-			frmSearchCallsign f = new frmSearchCallsign(this, iColW, sColN);
+			frmSearchCallsign f = new frmSearchCallsign(this);
 			f.ShowDialog();
 		}
 
+		#endregion
+
+		#region "Menu-Tool"
 		private void mnuMain_ToolsInportLogcs_Click(object sender, EventArgs e) {
 			dgvMain.ClearSelection();
 			string[] sHead = new string[dgvMain.Columns.Count];
@@ -543,7 +494,7 @@ namespace prjOpenLog {
 				else { iHead[i] = -1; }
 				sHead[i] = dgvMain.Columns[i].HeaderText;
 			}
-			frmInportLogcs f = new frmInportLogcs(AllQSO, iHead, sHead, BandList);
+			frmInportLogcs f = new frmInportLogcs(this);
 			f.ShowDialog();
 		}
 
@@ -555,7 +506,7 @@ namespace prjOpenLog {
 				else { iColW[i] = -1; sColN[i] = "N/A"; }
 			}
 
-			frmInport f = new frmInport(this, iColW, sColN);
+			frmInport f = new frmInport(this);
 			f.ShowDialog();
 		}
 
@@ -581,7 +532,7 @@ namespace prjOpenLog {
 					if (MessageBox.Show("周波数帯を修正しますか?", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes) {
 						foreach (cQSO q in lsQSO) {
 							foreach (string sB in BandList.Keys) {
-								if(BandList[sB].Lower <= q.Freq && q.Freq <= BandList[sB].Upper) { q.Band = sB; break; }
+								if (BandList[sB].Lower <= q.Freq && q.Freq <= BandList[sB].Upper) { q.Band = sB; break; }
 							}
 						}
 					}
@@ -622,7 +573,7 @@ namespace prjOpenLog {
 					using (SQLiteCommand cmd = con.CreateCommand()) {
 						cmd.CommandText = "delete from  [T_DefaultRig]";
 						cmd.ExecuteNonQuery();
-						
+
 						foreach (cDefaultRig df in DefaultRigList.Values) {
 							cmd.CommandText = string.Format("INSERT INTO [T_DefaultRig]([BandF], [RigHome], [AntHome], [RigMobile], [AntMobile]) VALUES('{0}','{1}','{2}','{3}','{4}');", df.BandF, df.RigHome, df.AntHome, df.RigMobile, df.AntMobile);
 							int iRes = cmd.ExecuteNonQuery();
@@ -658,13 +609,13 @@ namespace prjOpenLog {
 				sfd.FileName = string.Format("{0}_{1:yyyyMMdd}-{1:HHmm}.zip", Config.MyCall, DateTime.Now);
 				sfd.Filter = "Zipファイル(*.zip)|*.zip|すべてのファイル(*.*)|*.*";
 				sfd.OverwritePrompt = true;
-				if(sfd.ShowDialog() == DialogResult.OK) {
+				if (sfd.ShowDialog() == DialogResult.OK) {
 					GC.Collect();
 					GC.WaitForPendingFinalizers();
 					if (File.Exists(sfd.FileName)) { File.Delete(sfd.FileName); }
 					using (ZipArchive za = ZipFile.Open(sfd.FileName, ZipArchiveMode.Create)) {
 						za.CreateEntryFromFile(Path.Combine(Config.DBpath, Config.MyCall + ".db"), Config.MyCall + ".db", CompressionLevel.Fastest);
-						za.CreateEntryFromFile(Path.Combine(Config.DBpath, "PropertyList.db"), "PropertyList.db", CompressionLevel.Fastest);
+						za.CreateEntryFromFile(Path.Combine(Config.DBpath, CommonDbFile), CommonDbFile, CompressionLevel.Fastest);
 					}
 				}
 			}
@@ -674,36 +625,130 @@ namespace prjOpenLog {
 		}
 
 		private void mnuMain_ToolsEditBands_Click(object sender, EventArgs e) {
-			frmEditBand fb = new frmEditBand(BandList, Path.Combine(Config.DBpath, "PropertyList.db"));
+			frmEditBand fb = new frmEditBand(this);
 			fb.ShowDialog();
 		}
 
 		private void mnuMain_ToolsEditDxcc_Click(object sender, EventArgs e) {
-			frmEditDXCC fd = new frmEditDXCC(DXCCList, Path.Combine(Config.DBpath, "PropertyList.db"));
+			frmEditDXCC fd = new frmEditDXCC(this);
 			fd.ShowDialog();
 		}
 
 		private void mnuMain_ToolsEditCity_Click(object sender, EventArgs e) {
-			frmEditCity fc = new frmEditCity(CityList, Path.Combine(Config.DBpath, "PropertyList.db"));
+			frmEditCity fc = new frmEditCity(this);
 			fc.ShowDialog();
 		}
 
 
 		private void mnuMain_ToolsEditRigAnt_Click(object sender, EventArgs e) {
-			string sDB = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
-			frmEditDefaultRig fd = new frmEditDefaultRig(DefaultRigList, sDB);
+			frmEditDefaultRig fd = new frmEditDefaultRig(this);
 			fd.ShowDialog();
 		}
 
-		private void frmMain_FormClosed(object sender, FormClosedEventArgs e) {
-			Dispose();
+		#endregion
+
+		#region "Context menu"
+		private void cmsGrid_Received_Click(object sender, EventArgs e) {
+			if (dgvMain.SelectedRows == null) { return; }
+			if (dgvMain.SelectedRows.Count == 0) { return; }
+			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
+			if (qso == null) { return; }
+
+			if (qso.Card_Resv) { qso.Card_Resv = false; }
+			else { qso.Card_Resv = true; }
+			qso.LastUpdate = DateTime.UtcNow.Ticks;
+			SaveToDb();
+		}
+
+		private void cmsGrid_Sent_Click(object sender, EventArgs e) {
+			if (dgvMain.SelectedRows == null) { return; }
+			if (dgvMain.SelectedRows.Count == 0) { return; }
+			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
+			if (qso == null) { return; }
+
+			if (qso.Card_Send) { qso.Card_Send = false; }
+			else { qso.Card_Send = true; }
+			qso.LastUpdate = DateTime.UtcNow.Ticks;
+			SaveToDb();
+			CountCard();
+		}
+
+		private void cmsGrid_Remove_Click(object sender, EventArgs e) {
+			if (dgvMain.SelectedRows == null) { return; }
+			if (dgvMain.SelectedRows.Count == 0) { return; }
+			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
+			if (qso == null) { return; }
+			int iD = qso.ID;
+			AllQSO.Remove(qso);
+			if (0 <= iD) {
+				string sQSODb = Path.Combine(Config.DBpath, string.Format("{0}.db", Config.MyCall.ToUpper()));
+				try {
+					System.Reflection.PropertyInfo[] piQSO = typeof(cQSO).GetProperties();
+					using (SQLiteConnection con = new SQLiteConnection(string.Format("Data Source={0};Version=3;", sQSODb))) {
+						con.Open();
+						using (SQLiteTransaction st = con.BeginTransaction())
+						using (SQLiteCommand cmd = con.CreateCommand()) {
+							cmd.CommandText = string.Format("delete from [T_QSO] where [ID] = {0}", iD);
+							cmd.ExecuteNonQuery();
+							st.Commit();
+						}
+					}
+				}
+				catch (Exception ex) {
+					ErrMsg("Error: Saving QSO to DB.\n" + ex.Message);
+				}
+
+
+			}
+		}
+
+		private void cmsGrid_Print_Click(object sender, EventArgs e) {
+			if (dgvMain.SelectedRows == null) { return; }
+			if (dgvMain.SelectedRows.Count == 0) { return; }
+			cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
+			if (qso == null) { return; }
+
+			frmPrintCards fp = new frmPrintCards(new List<cQSO>() { qso }, this);
+			fp.ShowDialog();
+		}
+
+
+		#endregion
+
+
+		/// <summary>
+		/// QSO(行)をダブルクリック→QSO編集フォームを開く
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void dgvMain_CellDoubleClick(object sender, DataGridViewCellEventArgs e) {
+			try {
+				if(dgvMain.SelectedRows == null) { return; }
+				cQSO qso = dgvMain.SelectedRows[0].DataBoundItem as cQSO;
+				if(qso == null) {
+					if(AllQSO.Count == 0) { qso = new cQSO(); }
+					else { qso = new cQSO(AllQSO[AllQSO.Count - 1]); }
+				}
+
+				int[] iColW = new int[dgvMain.ColumnCount];
+				string[] sColN = new string[dgvMain.ColumnCount];
+				for (int i = 0; i < iColW.Length; i++) {
+					if (dgvMain.Columns[i].Visible) { iColW[i] = dgvMain.Columns[i].Width; sColN[i] = dgvMain.Columns[i].HeaderText; }
+					else { iColW[i] = -1; sColN[i] = "N/A"; }
+				}
+
+				frmQSO fq = new frmQSO(qso, this);
+				fq.Show();
+			}
+			catch(Exception ex) {
+				ErrMsg(ex.Message);
+			}
 		}
 
 		//エラーメッセージ
 		public void ErrMsg(string Msg) {
 			MessageBox.Show(Msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
-
 
 		/// <summary>
 		/// 空のDBを作成する
@@ -763,7 +808,7 @@ namespace prjOpenLog {
 		/// <summary>
 		/// DBへ保存
 		/// </summary>
-		private void SaveToDb() {
+		public void SaveToDb() {
 			List<cQSO> lsInsert = new List<cQSO>(); //新規
 			List<cQSO> lsUpdate = new List<cQSO>(); //更新
 			#region "新規・更新の抽出"

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using System.Data.SQLite;
 
 namespace prjOpenLog {
@@ -15,10 +16,10 @@ namespace prjOpenLog {
 		string _sDB;
 		BindingList<cDefaultRig> _blDF;
 		BindingSource _bs;
-		public frmEditDefaultRig(Dictionary<string, cDefaultRig> Default, string DB) {
+		public frmEditDefaultRig(frmMain MainForm) {
 			InitializeComponent();
-			_dcDF = Default;
-			_sDB = DB;
+			_dcDF = MainForm.DefaultRigList;
+			_sDB = Path.Combine(MainForm.Config.DBpath, frmMain.CommonDbFile);
 			_blDF = new BindingList<cDefaultRig>();
 			foreach(cDefaultRig r in _dcDF.Values) { _blDF.Add(r); }
 			_bs = new BindingSource();

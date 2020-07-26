@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using System.Data.SQLite;
 
 namespace prjOpenLog {
@@ -16,12 +17,12 @@ namespace prjOpenLog {
 		BindingSource _bs;
 		string _sDB;
 
-		public frmEditDXCC(Dictionary<string, cDxcc> DXCCs, string sDB) {
+		public frmEditDXCC(frmMain MainForm) {
 			InitializeComponent();
-			_sDB = sDB;
+			_sDB = Path.Combine(MainForm.Config.DBpath, frmMain.CommonDbFile);
 			_blDxcc = new BindingList<cDxcc>();
 			_bs = new BindingSource();
-			_dcDXCC = DXCCs;
+			_dcDXCC = MainForm.DXCCList;
 		}
 
 		private void frmEditDXCC_Load(object sender, EventArgs e) {

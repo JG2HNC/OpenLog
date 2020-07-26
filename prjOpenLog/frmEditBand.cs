@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using System.Data.SQLite;
 
 namespace prjOpenLog {
@@ -17,12 +18,12 @@ namespace prjOpenLog {
 		BindingSource _bs;
 
 
-		public frmEditBand(Dictionary<string, cBand> Bands, string sDB) {
+		public frmEditBand(frmMain MainForm) {
 			InitializeComponent();
-			_sDB = sDB;
-			_dcBandP = Bands;
+			_sDB = Path.Combine(MainForm.Config.DBpath, frmMain.CommonDbFile);
+			_dcBandP = MainForm.BandList;
 			_blBand = new BindingList<cBand>();
-			foreach(cBand bd in Bands.Values) { _blBand.Add(bd); }
+			foreach(cBand bd in _dcBandP.Values) { _blBand.Add(bd); }
 			_bs = new BindingSource();
 		}
 

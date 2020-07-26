@@ -25,9 +25,9 @@ namespace prjOpenLog {
 		private int[] _iColWidth;
 		private string[] _sColName;
 
-		public frmInport(frmMain MainForm, int[] ColWidths, string[] ColNames) {
+		public frmInport(frmMain MainForm) {
 			_blDest = MainForm.AllQSO; _dcDXCC = MainForm.DXCCList; _dcJCCG = MainForm.CityList; _dcBand = MainForm.BandList; _dcMode = MainForm.ModeList; _dcDefault = MainForm.DefaultRigList; _cfg = MainForm.Config;
-			_iColWidth = ColWidths; _sColName = ColNames;
+			_iColWidth = MainForm.GridColWidth; _sColName = MainForm.GridColNames;
 			_bs = new BindingSource();
 			_blPreview = new BindingList<cQSO>();
 

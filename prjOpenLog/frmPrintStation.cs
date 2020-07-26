@@ -10,12 +10,14 @@ using System.Windows.Forms;
 
 namespace prjOpenLog {
 	public partial class frmPrintStation : Form {
+		frmMain _MainForm;
 		Dictionary<string, List<cQSO>> _dcQSO;
 		Dictionary<string, cMode> _dcMode;
 
-		public frmPrintStation(List<cQSO> QSOs, Dictionary<string, cMode> Modes) {
+		public frmPrintStation(List<cQSO> QSOs, frmMain MainForm) {
+			_MainForm = MainForm;
 			_dcQSO = new Dictionary<string, List<cQSO>>();
-			_dcMode = Modes;
+			_dcMode = MainForm.ModeList;
 			foreach(cQSO q in QSOs) {
 				if (!_dcQSO.ContainsKey(q.Call)) { _dcQSO.Add(q.Call, new List<cQSO>()); }
 				_dcQSO[q.Call].Add(q);
@@ -59,7 +61,7 @@ namespace prjOpenLog {
 				}
 			}
 
-			frmPrintCards fp = new frmPrintCards(lsPrint, _dcMode);
+			frmPrintCards fp = new frmPrintCards(lsPrint, _MainForm);
 			fp.ShowDialog();
 			Close();
 		}

@@ -20,7 +20,7 @@ namespace prjOpenLog {
 		int[] _iColWidth;
 		string[] _sColName;
 
-		public frmSearchCallsign(frmMain MainForm, int[] ColWidth, string[] ColName) {
+		public frmSearchCallsign(frmMain MainForm) {
 			InitializeComponent();
 			_fMain = MainForm;
 			_blAllQSO = MainForm.AllQSO;
@@ -28,8 +28,8 @@ namespace prjOpenLog {
 			_bs = new BindingSource();
 			_bs.DataSource = _blResult;
 			dgvSearch.DataSource = _bs;
-			_iColWidth = ColWidth;
-			_sColName = ColName;
+			_iColWidth = MainForm.GridColWidth;
+			_sColName = MainForm.GridColNames;
 		}
 
 		private void frmSearchCallsign_Load(object sender, EventArgs e) {
@@ -84,6 +84,7 @@ namespace prjOpenLog {
 
 			if (qso.Card_Resv) { qso.Card_Resv = false; }
 			else { qso.Card_Resv = true; }
+			qso.LastUpdate = DateTime.UtcNow.Ticks;
 		}
 
 		private void cmsGrid_Sent_Click(object sender, EventArgs e) {
@@ -94,7 +95,24 @@ namespace prjOpenLog {
 
 			if (qso.Card_Send) { qso.Card_Send = false; }
 			else { qso.Card_Send = true; }
+			qso.LastUpdate = DateTime.UtcNow.Ticks;
 		}
+
+		private void cmsGrid_EditQSO_Click(object sender, EventArgs e) {
+			try {
+				if (dgvSearch.SelectedRows == null) { return; }
+				cQSO qso = dgvSearch.SelectedRows[0].DataBoundItem as cQSO;
+				if (qso == null) { return; }
+
+				frmQSO fq = new frmQSO(qso, _fMain);
+				fq.Show();
+			}
+			catch (Exception ex) {
+				ErrMsg(ex.Message);
+			}
+
+		}
+
 		#endregion
 
 
@@ -118,19 +136,5 @@ namespace prjOpenLog {
 			} catch(Exception ex) { ErrMsg(ex.Message); }
 		}
 
-		private void cmsGrid_EditQSO_Click(object sender, EventArgs e) {
-			try {
-				if (dgvSearch.SelectedRows == null) { return; }
-				cQSO qso = dgvSearch.SelectedRows[0].DataBoundItem as cQSO;
-				if (qso == null) { return; }
-
-				frmQSO fq = new frmQSO(qso, _fMain, _iColWidth, _sColName);
-				fq.Show();
-			}
-			catch (Exception ex) {
-				ErrMsg(ex.Message);
-			}
-
-		}
 	}
 }

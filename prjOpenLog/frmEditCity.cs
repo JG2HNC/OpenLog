@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Data.SQLite;
 
@@ -17,11 +18,11 @@ namespace prjOpenLog {
 		BindingSource _bs;
 		string _sDB;
 
-		public frmEditCity(Dictionary<string, cCity> City, string DB) {
-			_dcCity = City;
+		public frmEditCity(frmMain MainForm) {
+			_dcCity = MainForm.CityList;
 			_blCity = new BindingList<cCity>();
 			_bs = new BindingSource();
-			_sDB = DB;
+			_sDB = Path.Combine(MainForm.Config.DBpath, frmMain.CommonDbFile);
 			foreach (cCity c in _dcCity.Values) { _blCity.Add(c); }
 			InitializeComponent();
 		}

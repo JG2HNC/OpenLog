@@ -28,9 +28,9 @@ namespace prjOpenLog {
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="QSO">編集・新規QSOオブジェクト</param>
-		public frmQSO(cQSO QSO, frmMain MainForm, int[] ColWidths, string[] ColNames) {
+		public frmQSO(cQSO QSO, frmMain MainForm) {
 			_QSO = QSO; _blAllQSO = MainForm.AllQSO; _dcDXCC = MainForm.DXCCList; _dcCityCode = MainForm.CityList; _dcBand = MainForm.BandList; _dcMode = MainForm.ModeList; _dcDefault =MainForm.DefaultRigList; _cfg = MainForm.Config;
-			_iColWidth = ColWidths; _sColName = ColNames;
+			_iColWidth = MainForm.GridColWidth; _sColName = MainForm.GridColNames;
 			InitializeComponent();
 		}
 
@@ -41,7 +41,6 @@ namespace prjOpenLog {
 			_bsPast.DataSource = _blPastQSO;
 			dgvPastQSO.DataSource = _bsPast;
 			if(_QSO.Band != "") { lblBand.Text = _QSO.Band; }
-
 
 			#region "DataGridView制御"
 			dgvPastQSO.Columns["Prefix1"].Visible = false;

@@ -16,8 +16,8 @@ namespace prjOpenLog {
 		cPrintQSLDocument _pq;
 		bool _bIsEH;
 
-		public frmPrintCards(List<cQSO> PrintQSOs, Dictionary<string, cMode> Modes) {
-			_pq = new cPrintQSLDocument(PrintQSOs, Modes);
+		public frmPrintCards(List<cQSO> PrintQSOs, frmMain MainForm) {
+			_pq = new cPrintQSLDocument(PrintQSOs, MainForm.ModeList);
 			_pq.EndPrint += PrintQSL_EndPrint;
 			_bIsEH = false;
 			InitializeComponent();

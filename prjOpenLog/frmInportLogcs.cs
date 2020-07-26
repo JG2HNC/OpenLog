@@ -19,16 +19,16 @@ namespace prjOpenLog {
 		BindingSource _bs;
 		Dictionary<string, cBand> _dcBand;
 
-		public frmInportLogcs(BindingList<cQSO> Dest, int[] HeaderWidths, string[] HeaderTexts, Dictionary<string, cBand> Band) {
+		public frmInportLogcs(frmMain MainForm) {
 			InitializeComponent();
-			_blDest = Dest;
-			_sColN = HeaderTexts;
-			_iColW = HeaderWidths;
+			_blDest = MainForm.AllQSO;
+			_sColN = MainForm.GridColNames;
+			_iColW = MainForm.GridColWidth;
 			_blPreview = new BindingList<cQSO>();
 			_bs = new BindingSource();
 			_bs.DataSource = _blPreview;
 			dgvInport.DataSource = _bs;
-			_dcBand = Band;
+			_dcBand = MainForm.BandList;
 		}
 
 		private void frmInportLogcs_Load(object sender, EventArgs e) {
