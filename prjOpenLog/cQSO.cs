@@ -264,7 +264,7 @@ namespace prjOpenLog {
 		public int QSLMethod {
 			get { return ((int)_eQSLMethod); }
 			set {
-				if (1 <= value && value <= 4) { _eQSLMethod = (enQSLMethod)Enum.ToObject(typeof(enQSLMethod), value); }
+				if (1 <= value && value <= 5) { _eQSLMethod = (enQSLMethod)Enum.ToObject(typeof(enQSLMethod), value); }
 				else { _eQSLMethod = enQSLMethod.X; }
 				RaisePropertyChanged();
 			}

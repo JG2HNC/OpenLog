@@ -458,6 +458,27 @@ namespace prjOpenLog {
 			fp.ShowDialog();
 		}
 
+		private void mnuFilePrintCard_JA_Click(object sender, EventArgs e) {
+			List<cQSO> lsPrint = new List<cQSO>();
+			foreach (cQSO q in AllQSO) {
+				if (!q.Card_Send && q.QSLMethod != (int)cQSO.enQSLMethod.N && q.QSLMethod != (int)cQSO.enQSLMethod.R && q.DXCC == "JA") { lsPrint.Add(q); }
+			}
+			frmPrintCards fp = new frmPrintCards(lsPrint, this);
+			fp.ShowDialog();
+
+		}
+
+		private void mnuFilePrintCard_NoJA_Click(object sender, EventArgs e) {
+			List<cQSO> lsPrint = new List<cQSO>();
+			foreach (cQSO q in AllQSO) {
+				if (!q.Card_Send && q.QSLMethod != (int)cQSO.enQSLMethod.N && q.QSLMethod != (int)cQSO.enQSLMethod.R && q.DXCC != "JA") { lsPrint.Add(q); }
+			}
+			frmPrintCards fp = new frmPrintCards(lsPrint, this);
+			fp.ShowDialog();
+
+		}
+
+
 		private void mnuFilePrintStation_Click(object sender, EventArgs e) {
 			List<cQSO> lsPrint = new List<cQSO>();
 			foreach (cQSO q in AllQSO) {
@@ -466,6 +487,7 @@ namespace prjOpenLog {
 			frmPrintStation fs = new frmPrintStation(lsPrint, this);
 			fs.Show();
 		}
+
 
 		#endregion
 

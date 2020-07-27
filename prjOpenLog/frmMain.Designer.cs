@@ -54,6 +54,8 @@
 			this.cmsGrid_Sent = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGrid_Remove = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGrid_Print = new System.Windows.Forms.ToolStripMenuItem();
+			this.mnuFilePrintCard_JA = new System.Windows.Forms.ToolStripMenuItem();
+			this.mnuFilePrintCard_NoJA = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnsMain.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.dgvMain)).BeginInit();
 			this.stsMain.SuspendLayout();
@@ -80,6 +82,8 @@
             this.mnuSaveDB,
             this.toolStripSeparator3,
             this.mnuFilePrintCard,
+            this.mnuFilePrintCard_JA,
+            this.mnuFilePrintCard_NoJA,
             this.mnuFilePrintStation});
 			this.mnuMain_File.Name = "mnuMain_File";
 			this.mnuMain_File.Size = new System.Drawing.Size(57, 21);
@@ -111,7 +115,7 @@
 			this.mnuFilePrintCard.Name = "mnuFilePrintCard";
 			this.mnuFilePrintCard.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
 			this.mnuFilePrintCard.Size = new System.Drawing.Size(248, 22);
-			this.mnuFilePrintCard.Text = "カード印刷";
+			this.mnuFilePrintCard.Text = "カード印刷(全対象)";
 			this.mnuFilePrintCard.Click += new System.EventHandler(this.mnuFilePrintCard_Click);
 			// 
 			// mnuFilePrintStation
@@ -308,6 +312,20 @@
 			this.cmsGrid_Print.Text = "QSL 印刷(1レコード)";
 			this.cmsGrid_Print.Click += new System.EventHandler(this.cmsGrid_Print_Click);
 			// 
+			// mnuFilePrintCard_JA
+			// 
+			this.mnuFilePrintCard_JA.Name = "mnuFilePrintCard_JA";
+			this.mnuFilePrintCard_JA.Size = new System.Drawing.Size(248, 22);
+			this.mnuFilePrintCard_JA.Text = "カード印刷(JA)";
+			this.mnuFilePrintCard_JA.Click += new System.EventHandler(this.mnuFilePrintCard_JA_Click);
+			// 
+			// mnuFilePrintCard_NoJA
+			// 
+			this.mnuFilePrintCard_NoJA.Name = "mnuFilePrintCard_NoJA";
+			this.mnuFilePrintCard_NoJA.Size = new System.Drawing.Size(248, 22);
+			this.mnuFilePrintCard_NoJA.Text = "カード印刷(JA以外)";
+			this.mnuFilePrintCard_NoJA.Click += new System.EventHandler(this.mnuFilePrintCard_NoJA_Click);
+			// 
 			// frmMain
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -365,6 +383,8 @@
 		private System.Windows.Forms.ToolStripMenuItem mnuMain_ToolsEditDxcc;
 		private System.Windows.Forms.ToolStripMenuItem mnuMain_ToolsEditRigAnt;
 		private System.Windows.Forms.ToolStripMenuItem mnuMain_ToolsEditCity;
+		private System.Windows.Forms.ToolStripMenuItem mnuFilePrintCard_JA;
+		private System.Windows.Forms.ToolStripMenuItem mnuFilePrintCard_NoJA;
 	}
 }
 
