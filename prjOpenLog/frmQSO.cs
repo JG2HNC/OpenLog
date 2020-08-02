@@ -40,7 +40,10 @@ namespace prjOpenLog {
 			_bsPast = new BindingSource();
 			_bsPast.DataSource = _blPastQSO;
 			dgvPastQSO.DataSource = _bsPast;
-			if(_QSO.Band != "") { lblBand.Text = _QSO.Band; }
+
+			//Band
+			foreach(cBand bd in _dcBand.Values) { cboBand.Items.Add(bd); }
+			SetBandComboBox();
 
 			#region "DataGridView制御"
 			dgvPastQSO.Columns["Prefix1"].Visible = false;
@@ -181,6 +184,25 @@ namespace prjOpenLog {
 			}
 		}
 
+		/// <summary>
+		/// Band(コンボボックス)
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void cboBand_SelectedIndexChanged(object sender, EventArgs e) {
+			cBand bd = cboBand.SelectedItem as cBand;
+			if(bd == null) { ErrMsg("無効な周波数選択です。"); }//安全装置
+			_QSO.Band = bd.NameF;
+
+			string sBn = _QSO.Freq.ToString() + "MHz";
+			if((_QSO.Freq < bd.Lower || bd.Upper < _QSO.Freq) && sBn != bd.NameF) {
+				MessageBox.Show(string.Format("周波数帯と周波数が矛盾しています。\n周波数帯「{0}」の範囲:{1}～{2}MHz\n周波数:{3}MHz", bd.NameF, bd.Lower, bd.Upper, _QSO.Freq),
+					"確認", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			}
+
+		}
+
+
 		#region "Formに入力された文字列のチェック"
 
 		//日付Format
@@ -307,16 +329,34 @@ namespace prjOpenLog {
 		private void txtFreq_Leave(object sender, EventArgs e) {
 			double dFreq;
 			if (!double.TryParse(txtFreq.Text, out dFreq)) { ErrMsg("Invalid frequency formatting.\n周波数の書式が不正です。\n" + txtFreq.Text); return; }
+			_QSO.Freq = dFreq;
 
-			bool bFlg = false;
-			foreach (string sB in _dcBand.Keys) { if (_dcBand[sB].Lower <= dFreq && dFreq <= _dcBand[sB].Upper) { lblBand.Text = sB;  bFlg=true; } }
-			if (!bFlg) { WarnMsg("The input frequency is out of range.\n入力された周波数が範囲外です。\n" + txtFreq.Text + "[MHz]"); lblBand.Text = "N/A"; }
-			
+			//周波数帯
+			SetBandComboBox();
+
+			#region "周波数帯"
+			{
+				bool bFlg = false; //周波数帯がHitしたか
+
+				//まずは周波数の範囲から
+				foreach (string sB in _dcBand.Keys) { if (_dcBand[sB].Lower <= dFreq && dFreq <= _dcBand[sB].Upper) { _QSO.Band = sB; SetBandComboBox(); bFlg = true; break; } }
+
+				//名称から→WARCバンド対策
+				if (!bFlg) {
+					string sBn = _QSO.Freq.ToString() + "MHz";
+					foreach (string sB in _dcBand.Keys) {
+						if (sBn == sB) { _QSO.Band = sB; SetBandComboBox(); bFlg = true; break; }
+					}
+				}
+
+				if (!bFlg) { WarnMsg("The input frequency is out of range.\n入力された周波数が範囲外です。\n" + txtFreq.Text + "[MHz]"); }
+			}
+			#endregion
 
 			//RIG入力
-			if(_cfg.UseDefaultRig && _dcDefault.ContainsKey(lblBand.Text)){
-				if (txtPrefix_My.Text == "") { txtRig_My.Text = _dcDefault[lblBand.Text].RigHome; txtAnt_My.Text = _dcDefault[lblBand.Text].AntHome; }
-				else { txtRig_My.Text = _dcDefault[lblBand.Text].RigMobile; txtAnt_My.Text = _dcDefault[lblBand.Text].AntMobile; }
+			if (_cfg.UseDefaultRig && _dcDefault.ContainsKey(_QSO.Band)){
+				if (txtPrefix_My.Text == "") { txtRig_My.Text = _dcDefault[_QSO.Band].RigHome; txtAnt_My.Text = _dcDefault[_QSO.Band].AntHome; }
+				else { txtRig_My.Text = _dcDefault[_QSO.Band].RigMobile; txtAnt_My.Text = _dcDefault[_QSO.Band].AntMobile; }
 			}
 
 		}
@@ -721,6 +761,17 @@ namespace prjOpenLog {
 		}
 		#endregion
 
+		/// <summary>
+		/// Bandの値からComboBoxを設定する
+		/// </summary>
+		private void SetBandComboBox() {
+			//Bandの値から
+			for(int i = 0; i < cboBand.Items.Count; i++) {
+				cBand bd = cboBand.Items[i] as cBand;
+				if(bd == null) { continue; } //安全装置
+				if(bd.NameF == _QSO.Band) { cboBand.SelectedIndex = i; break; }
+			}
+		}
 	}
 
 }

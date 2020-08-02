@@ -56,6 +56,9 @@ namespace prjOpenLog {
 		public string NameL { get { return (_sL); } set { _sL = value; } }
 		public double Lower { get { return (_dL); } set { _dL = value; } }
 		public double Upper { get { return (_dU); } set { _dU = value; } }
+		public override string ToString() {
+			return (_sF);
+		}
 	}
 
 	public class cCity {

@@ -23,12 +23,8 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.tabQSO = new System.Windows.Forms.TabControl();
 			this.tbpQSO = new System.Windows.Forms.TabPage();
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.lblBand = new System.Windows.Forms.Label();
 			this.pnlLastQSO = new System.Windows.Forms.Panel();
 			this.lblLastQSO = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -105,9 +101,9 @@
 			this.dgvPastQSO = new System.Windows.Forms.DataGridView();
 			this.cmdRegist = new System.Windows.Forms.Button();
 			this.cmdCancel = new System.Windows.Forms.Button();
+			this.cboBand = new System.Windows.Forms.ComboBox();
 			this.tabQSO.SuspendLayout();
 			this.tbpQSO.SuspendLayout();
-			this.panel1.SuspendLayout();
 			this.pnlLastQSO.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -133,7 +129,7 @@
 			// 
 			// tbpQSO
 			// 
-			this.tbpQSO.Controls.Add(this.panel1);
+			this.tbpQSO.Controls.Add(this.cboBand);
 			this.tbpQSO.Controls.Add(this.pnlLastQSO);
 			this.tbpQSO.Controls.Add(this.groupBox3);
 			this.tbpQSO.Controls.Add(this.groupBox2);
@@ -166,29 +162,6 @@
 			this.tbpQSO.TabIndex = 0;
 			this.tbpQSO.Text = "データ入力";
 			this.tbpQSO.UseVisualStyleBackColor = true;
-			// 
-			// panel1
-			// 
-			this.panel1.BackColor = System.Drawing.Color.Transparent;
-			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.panel1.Controls.Add(this.lblBand);
-			this.panel1.ForeColor = System.Drawing.SystemColors.Control;
-			this.panel1.Location = new System.Drawing.Point(519, 57);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(100, 25);
-			this.panel1.TabIndex = 211;
-			// 
-			// lblBand
-			// 
-			this.lblBand.AutoSize = true;
-			this.lblBand.Font = new System.Drawing.Font("ＭＳ ゴシック", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.lblBand.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.lblBand.Location = new System.Drawing.Point(28, 3);
-			this.lblBand.Name = "lblBand";
-			this.lblBand.Size = new System.Drawing.Size(31, 15);
-			this.lblBand.TabIndex = 210;
-			this.lblBand.Text = "N/A";
-			this.lblBand.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			// 
 			// pnlLastQSO
 			// 
@@ -1069,23 +1042,7 @@
 			this.dgvPastQSO.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-			dataGridViewCellStyle1.Font = new System.Drawing.Font("ＭＳ ゴシック", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-			this.dgvPastQSO.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
 			this.dgvPastQSO.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-			dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-			dataGridViewCellStyle2.Font = new System.Drawing.Font("ＭＳ ゴシック", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-			dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-			this.dgvPastQSO.DefaultCellStyle = dataGridViewCellStyle2;
 			this.dgvPastQSO.Location = new System.Drawing.Point(6, 6);
 			this.dgvPastQSO.Name = "dgvPastQSO";
 			this.dgvPastQSO.ReadOnly = true;
@@ -1119,6 +1076,17 @@
 			this.cmdCancel.UseVisualStyleBackColor = true;
 			this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
 			// 
+			// cboBand
+			// 
+			this.cboBand.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboBand.Font = new System.Drawing.Font("ＭＳ ゴシック", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.cboBand.FormattingEnabled = true;
+			this.cboBand.Location = new System.Drawing.Point(519, 57);
+			this.cboBand.Name = "cboBand";
+			this.cboBand.Size = new System.Drawing.Size(100, 23);
+			this.cboBand.TabIndex = 262;
+			this.cboBand.SelectedIndexChanged += new System.EventHandler(this.cboBand_SelectedIndexChanged);
+			// 
 			// frmQSO
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1134,8 +1102,6 @@
 			this.tabQSO.ResumeLayout(false);
 			this.tbpQSO.ResumeLayout(false);
 			this.tbpQSO.PerformLayout();
-			this.panel1.ResumeLayout(false);
-			this.panel1.PerformLayout();
 			this.pnlLastQSO.ResumeLayout(false);
 			this.pnlLastQSO.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
@@ -1229,10 +1195,9 @@
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.Label lblLastQSO;
 		private System.Windows.Forms.DataGridView dgvPastQSO;
-		private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.Label lblBand;
 		private System.Windows.Forms.Button cmdQTH_h;
 		private System.Windows.Forms.Button cmdCancel;
 		private System.Windows.Forms.RadioButton rdo1way;
+		private System.Windows.Forms.ComboBox cboBand;
 	}
 }

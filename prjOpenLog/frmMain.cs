@@ -553,8 +553,15 @@ namespace prjOpenLog {
 				if (bBandErr) {
 					if (MessageBox.Show("周波数帯を修正しますか?", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes) {
 						foreach (cQSO q in lsQSO) {
+							//まずは周波数の範囲から
 							foreach (string sB in BandList.Keys) {
 								if (BandList[sB].Lower <= q.Freq && q.Freq <= BandList[sB].Upper) { q.Band = sB; break; }
+							}
+
+							//名称から→WARCバンド対策
+							string sBn = q.Freq.ToString() + "MHz";
+							foreach (string sB in BandList.Keys) {
+								if (sBn == sB) { q.Band = sB; break; }
 							}
 						}
 					}
