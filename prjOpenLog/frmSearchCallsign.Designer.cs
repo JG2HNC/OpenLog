@@ -24,7 +24,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
-			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+			System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
 			this.txtCall = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.dgvSearch = new System.Windows.Forms.DataGridView();
@@ -34,6 +34,11 @@
 			this.cmsGrid_Received = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGrid_Sent = new System.Windows.Forms.ToolStripMenuItem();
 			this.cmsGrid_EditQSO = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmsGrid_QSL = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmsGrid_QSL_Bureau = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmsGrid_QSL_Direct = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmsGrid_QSL_No = new System.Windows.Forms.ToolStripMenuItem();
+			this.cmsGrid_QSL_1way = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.dgvSearch)).BeginInit();
 			this.cmsGrid.SuspendLayout();
 			this.SuspendLayout();
@@ -64,14 +69,14 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.dgvSearch.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-			dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-			dataGridViewCellStyle1.Font = new System.Drawing.Font("ＭＳ ゴシック", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-			dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-			dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-			this.dgvSearch.DefaultCellStyle = dataGridViewCellStyle1;
+			dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+			dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
+			dataGridViewCellStyle6.Font = new System.Drawing.Font("ＭＳ ゴシック", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
+			dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+			dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+			dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+			this.dgvSearch.DefaultCellStyle = dataGridViewCellStyle6;
 			this.dgvSearch.Location = new System.Drawing.Point(12, 34);
 			this.dgvSearch.Name = "dgvSearch";
 			this.dgvSearch.ReadOnly = true;
@@ -95,7 +100,7 @@
 			// 
 			// cmdSearch
 			// 
-			this.cmdSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cmdSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.cmdSearch.Location = new System.Drawing.Point(249, 6);
 			this.cmdSearch.Name = "cmdSearch";
 			this.cmdSearch.Size = new System.Drawing.Size(40, 22);
@@ -110,6 +115,7 @@
 			this.cmsGrid.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.cmsGrid_Received,
             this.cmsGrid_Sent,
+            this.cmsGrid_QSL,
             this.cmsGrid_EditQSO});
 			this.cmsGrid.Name = "cmsGrid";
 			this.cmsGrid.Size = new System.Drawing.Size(195, 92);
@@ -134,6 +140,45 @@
 			this.cmsGrid_EditQSO.Size = new System.Drawing.Size(194, 22);
 			this.cmsGrid_EditQSO.Text = "QSOを編集";
 			this.cmsGrid_EditQSO.Click += new System.EventHandler(this.cmsGrid_EditQSO_Click);
+			// 
+			// cmsGrid_QSL
+			// 
+			this.cmsGrid_QSL.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmsGrid_QSL_Bureau,
+            this.cmsGrid_QSL_Direct,
+            this.cmsGrid_QSL_No,
+            this.cmsGrid_QSL_1way});
+			this.cmsGrid_QSL.Name = "cmsGrid_QSL";
+			this.cmsGrid_QSL.Size = new System.Drawing.Size(194, 22);
+			this.cmsGrid_QSL.Text = "QSL 発送方法";
+			// 
+			// cmsGrid_QSL_Bureau
+			// 
+			this.cmsGrid_QSL_Bureau.Name = "cmsGrid_QSL_Bureau";
+			this.cmsGrid_QSL_Bureau.Size = new System.Drawing.Size(152, 22);
+			this.cmsGrid_QSL_Bureau.Text = "Bureau";
+			this.cmsGrid_QSL_Bureau.Click += new System.EventHandler(this.cmsGrid_QSL_Bureau_Click);
+			// 
+			// cmsGrid_QSL_Direct
+			// 
+			this.cmsGrid_QSL_Direct.Name = "cmsGrid_QSL_Direct";
+			this.cmsGrid_QSL_Direct.Size = new System.Drawing.Size(152, 22);
+			this.cmsGrid_QSL_Direct.Text = "Direct";
+			this.cmsGrid_QSL_Direct.Click += new System.EventHandler(this.cmsGrid_QSL_Direct_Click);
+			// 
+			// cmsGrid_QSL_No
+			// 
+			this.cmsGrid_QSL_No.Name = "cmsGrid_QSL_No";
+			this.cmsGrid_QSL_No.Size = new System.Drawing.Size(152, 22);
+			this.cmsGrid_QSL_No.Text = "No QSL";
+			this.cmsGrid_QSL_No.Click += new System.EventHandler(this.cmsGrid_QSL_No_Click);
+			// 
+			// cmsGrid_QSL_1way
+			// 
+			this.cmsGrid_QSL_1way.Name = "cmsGrid_QSL_1way";
+			this.cmsGrid_QSL_1way.Size = new System.Drawing.Size(152, 22);
+			this.cmsGrid_QSL_1way.Text = "1 way";
+			this.cmsGrid_QSL_1way.Click += new System.EventHandler(this.cmsGrid_QSL_1way_Click);
 			// 
 			// frmSearchCallsign
 			// 
@@ -167,5 +212,10 @@
 		private System.Windows.Forms.ToolStripMenuItem cmsGrid_Received;
 		private System.Windows.Forms.ToolStripMenuItem cmsGrid_Sent;
 		private System.Windows.Forms.ToolStripMenuItem cmsGrid_EditQSO;
+		private System.Windows.Forms.ToolStripMenuItem cmsGrid_QSL;
+		private System.Windows.Forms.ToolStripMenuItem cmsGrid_QSL_Bureau;
+		private System.Windows.Forms.ToolStripMenuItem cmsGrid_QSL_Direct;
+		private System.Windows.Forms.ToolStripMenuItem cmsGrid_QSL_No;
+		private System.Windows.Forms.ToolStripMenuItem cmsGrid_QSL_1way;
 	}
 }

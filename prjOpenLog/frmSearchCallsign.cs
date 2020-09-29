@@ -68,6 +68,10 @@ namespace prjOpenLog {
 			lsPast.Sort((a, b) => a.Date_S.CompareTo(b.Date_S));
 			foreach (cQSO q in lsPast) { _blResult.Add(q); }
 			dgvSearch.ResumeLayout();
+			dgvSearch.Refresh();
+
+			//テキストボックス全選択
+			txtCall.SelectAll();
 
 		}
 
@@ -111,8 +115,71 @@ namespace prjOpenLog {
 				ErrMsg(ex.Message);
 			}
 
+
+		}
+		private void cmsGrid_QSL_Bureau_Click(object sender, EventArgs e) {
+			try {
+				if (dgvSearch.SelectedRows == null) { return; }
+				cQSO qso = dgvSearch.SelectedRows[0].DataBoundItem as cQSO;
+				if (qso == null) { return; }
+
+				qso.QSLMethod = (int)cQSO.enQSLMethod.B;
+				dgvSearch.Refresh();
+
+			}
+			catch (Exception ex) {
+				ErrMsg(ex.Message);
+			}
+
 		}
 
+		private void cmsGrid_QSL_Direct_Click(object sender, EventArgs e) {
+			try {
+				if (dgvSearch.SelectedRows == null) { return; }
+				cQSO qso = dgvSearch.SelectedRows[0].DataBoundItem as cQSO;
+				if (qso == null) { return; }
+
+				qso.QSLMethod = (int)cQSO.enQSLMethod.D;
+				dgvSearch.Refresh();
+
+			}
+			catch (Exception ex) {
+				ErrMsg(ex.Message);
+			}
+
+		}
+
+		private void cmsGrid_QSL_No_Click(object sender, EventArgs e) {
+			try {
+				if (dgvSearch.SelectedRows == null) { return; }
+				cQSO qso = dgvSearch.SelectedRows[0].DataBoundItem as cQSO;
+				if (qso == null) { return; }
+
+				qso.QSLMethod = (int)cQSO.enQSLMethod.N;
+				dgvSearch.Refresh();
+
+			}
+			catch (Exception ex) {
+				ErrMsg(ex.Message);
+			}
+
+		}
+
+		private void cmsGrid_QSL_1way_Click(object sender, EventArgs e) {
+			try {
+				if (dgvSearch.SelectedRows == null) { return; }
+				cQSO qso = dgvSearch.SelectedRows[0].DataBoundItem as cQSO;
+				if (qso == null) { return; }
+
+				qso.QSLMethod = (int)cQSO.enQSLMethod.R;
+				dgvSearch.Refresh();
+
+			}
+			catch (Exception ex) {
+				ErrMsg(ex.Message);
+			}
+
+		}
 		#endregion
 
 
@@ -135,6 +202,7 @@ namespace prjOpenLog {
 				cmsGrid_EditQSO_Click(sender, e);
 			} catch(Exception ex) { ErrMsg(ex.Message); }
 		}
+
 
 	}
 }
