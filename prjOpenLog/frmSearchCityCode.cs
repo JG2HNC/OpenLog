@@ -40,7 +40,9 @@ namespace prjOpenLog {
 				string sA = _dcCityCode[sK].Area;
 				string sN = _dcCityCode[sK].Name;
 				string sPat = _dcCityCode[sK].SearchStr;
-				if(sA != txtArea.Text) { continue; }
+
+				//エリアでフィルタ
+				if(txtArea.Text !="" && sA != txtArea.Text) { continue; }
 				if (chkExceptOld.Checked) {
 					if(Regex.IsMatch(sN, @"^\*")) { continue; } //廃止を除外
 				}

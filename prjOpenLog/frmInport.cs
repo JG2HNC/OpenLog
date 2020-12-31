@@ -239,7 +239,9 @@ namespace prjOpenLog {
 		#region "Leaveイベント(入力チェック)"
 		private void txtPrefix_My_Leave(object sender, EventArgs e) {
 			int iA;
-			if (txtPrefix_My.Text != "" && !int.TryParse(txtPrefix_My.Text, out iA)) { MessageBox.Show("エリアの書式が不正です(数値で入れてください)", "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error); txtPrefix_My.Text = ""; }
+			if (txtPrefix_My.Text != "" && !int.TryParse(txtPrefix_My.Text, out iA)) {
+				if (MessageBox.Show("エリアが文字で入力されています(数字でない)。\nそのままでいいですか?", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) { txtPrefix_My.Text = ""; }
+			}
 		}
 		#endregion
 

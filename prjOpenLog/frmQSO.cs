@@ -43,9 +43,25 @@ namespace prjOpenLog {
 
 			//Band
 			foreach(cBand bd in _dcBand.Values) { cboBand.Items.Add(bd); }
+			if (_QSO.Band == null) {
+				bool bFlg = false; //周波数帯がHitしたか
+
+				//まずは周波数の範囲から
+				foreach (string sB in _dcBand.Keys) { if (_dcBand[sB].Lower <= _QSO.Freq && _QSO.Freq <= _dcBand[sB].Upper) { _QSO.Band = sB; SetBandComboBox(); bFlg = true; break; } }
+
+				//名称から→WARCバンド対策
+				if (!bFlg) {
+					string sBn = _QSO.Freq.ToString() + "MHz";
+					foreach (string sB in _dcBand.Keys) {
+						if (sBn == sB) { _QSO.Band = sB; SetBandComboBox(); bFlg = true; break; }
+					}
+				}
+			}
+
+
 			SetBandComboBox();
 
-			#region "DataGridView制御"
+			#region "過去の更新:DataGridView制御"
 			dgvPastQSO.Columns["Prefix1"].Visible = false;
 			dgvPastQSO.Columns["Prefix2"].Visible = false;
 			dgvPastQSO.Columns["Call"].Visible = false;
