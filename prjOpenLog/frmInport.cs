@@ -112,8 +112,19 @@ namespace prjOpenLog {
 					else { lsErr.Add(string.Format("Line:{0} 周波数の書式が不正", iL)); }
 					q.Mode = sL[7];
 
+					string[] sCalls = q.Call.Split('/');
+					#region "移動運用対策"
+					if(sCalls.Length == 3) { q.Prefix1 = sCalls[0]; q.Call = sCalls[1]; q.Prefix2 = sCalls[2]; }
+					else if(sCalls.Length == 2) {
+						if(sCalls[0].Length < sCalls[1].Length) { q.Prefix1 = sCalls[0]; q.Call = sCalls[1];}
+						else { q.Call = sCalls[0]; q.Prefix2 = sCalls[1]; }
+					}
+					#endregion
+
+
+
 					//デフォルト設定のリグ
-					if(chkUseDefault.Checked && _dcDefault.ContainsKey(q.Band)) {
+					if (chkUseDefault.Checked && _dcDefault.ContainsKey(q.Band)) {
 						if(q.Prefix_My == "") { q.Rig_My = _dcDefault[q.Band].RigHome; q.Ant_My = _dcDefault[q.Band].AntHome; }
 						else { q.Rig_My = _dcDefault[q.Band].RigMobile; q.Ant_My = _dcDefault[q.Band].AntMobile; }
 					}
