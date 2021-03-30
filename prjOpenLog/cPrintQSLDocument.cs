@@ -176,7 +176,7 @@ namespace prjOpenLog {
 						Pen pn = new Pen(Color.FromArgb(iR, iG, iB), fW);
 						g.DrawLine(pn, fX, fY, fX2, fY2);
 					}
-					if (sCom == "line_ifblank") { //線分 #line(x1, y1, x2, y2, Red, Green, Blue, Width,対象とするQSO番号)
+					else if (sCom == "line_ifblank") { //線分 #line(x1, y1, x2, y2, Red, Green, Blue, Width,対象とするQSO番号)
 						int iNo = 0;
 						if (9 <= sPrm.Length) { if (int.TryParse(sPrm[8], out iNo)) { iNo--; } }
 						bool bFlg = false;
@@ -197,7 +197,7 @@ namespace prjOpenLog {
 						Pen pn = new Pen(Color.FromArgb(iR, iG, iB), fW);
 						g.DrawLine(pn, fX, fY, fX2, fY2);
 					}
-					if (sCom == "rect") { //長方形 #rect(x1, y1, w, h, Red, Green, Blue, Width)
+					else if (sCom == "rect") { //長方形 #rect(x1, y1, w, h, Red, Green, Blue, Width)
 						float fW, fH;
 						if (!float.TryParse(sPrm[2], out fW)) { throw new Exception(string.Format("幅Wは数値である必要があります。\n{0}行目、{1}", _lsCom[iC].LineNo, _lsCom[iC].Line)); }
 						if (!float.TryParse(sPrm[3], out fH)) { throw new Exception(string.Format("高さHは数値である必要があります。\n{0}行目、{1}", _lsCom[iC].LineNo, _lsCom[iC].Line)); }
@@ -207,7 +207,7 @@ namespace prjOpenLog {
 						Pen pn = new Pen(Color.FromArgb(iR, iG, iB), fT);
 						g.DrawRectangle(pn, fX, fY, fW, fH);
 					}
-					if (sCom == "text") { //横書きテキスト #text(x, y, フォント名, サイズ, Align) Data
+					else if (sCom == "text") { //横書きテキスト #text(x, y, フォント名, サイズ, Align) Data
 						float fS;
 						if (!float.TryParse(sPrm[3], out fS)) { throw new Exception(string.Format("フォントサイズは数値である必要があります。\n{0}行目、{1}", _lsCom[iC].LineNo, _lsCom[iC].Line)); }
 						Font ft = new Font(sPrm[2], fS);
@@ -216,7 +216,7 @@ namespace prjOpenLog {
 						if (4 < sPrm.Length) { sAlgn = sPrm[4]; GetTextOrg(sDat, sAlgn, ft, g, ref fX, ref fY); }
 						g.DrawString(sDat, ft, bh, fX, fY);
 					}
-					if (sCom == "text_p") { //1文字テキスト #text_p(x, y, フォント名, サイズ, 開始位置:1～) Data
+					else if (sCom == "text_p") { //1文字テキスト #text_p(x, y, フォント名, サイズ, 開始位置:1～) Data
 						float fS;
 						if (!float.TryParse(sPrm[3], out fS)) { throw new Exception(string.Format("フォントサイズは数値である必要があります。\n{0}行目、{1}", _lsCom[iC].LineNo, _lsCom[iC].Line)); }
 						Font ft = new Font(sPrm[2], fS);
@@ -228,7 +228,7 @@ namespace prjOpenLog {
 						else { sDat = sDat.Substring(iStart, 1); }
 						g.DrawString(sDat, ft, bh, fX, fY);
 					}
-					if (sCom == "text_rcvd") { //QSL受領時テキスト #text_rcvd(x, y, フォント名, サイズ, Align, QSO番号) Data
+					else if (sCom == "text_rcvd") { //QSL受領時テキスト #text_rcvd(x, y, フォント名, サイズ, Align, QSO番号) Data
 						int iNo = 0;
 						if (6 <= sPrm.Length) { if (int.TryParse(sPrm[5], out iNo)) { iNo--; } }
 						if (_lsQSO.Count <= iCurIndex + iNo) { continue; }
@@ -242,7 +242,7 @@ namespace prjOpenLog {
 						if (4 < sPrm.Length) { sAlgn = sPrm[4]; GetTextOrg(sDat, sAlgn, ft, g, ref fX, ref fY); }
 						g.DrawString(sDat, ft, bh, fX, fY);
 					}
-					if (sCom == "text_unrcvd") { //QSL未受領時テキスト #text_unrcvd(x, y, フォント名, サイズ, Align, QSO番号) Data
+					else if (sCom == "text_unrcvd") { //QSL未受領時テキスト #text_unrcvd(x, y, フォント名, サイズ, Align, QSO番号) Data
 						int iNo = 0;
 						if (6 <= sPrm.Length) { if (int.TryParse(sPrm[5], out iNo)) { iNo--; } }
 						if (_lsQSO.Count <= iCurIndex + iNo) { continue; }
@@ -257,7 +257,7 @@ namespace prjOpenLog {
 						if (4 < sPrm.Length) { sAlgn = sPrm[4]; GetTextOrg(sDat, sAlgn, ft, g, ref fX, ref fY); }
 						g.DrawString(sDat, ft, bh, fX, fY);
 					}
-					if (sCom == "text_myport") { //自局移動運用時Prefix(/エリア) #text_unrcvd(x, y, フォント名, サイズ, Align, QSO番号) Data
+					else if (sCom == "text_myport") { //自局移動運用時Prefix(/エリア) #text_unrcvd(x, y, フォント名, サイズ, Align, QSO番号) Data
 						int iNo = 0;
 						if (6 <= sPrm.Length) { if (int.TryParse(sPrm[5], out iNo)) { iNo--; } }
 						if (_lsQSO.Count <= iCurIndex + iNo) { continue; }
@@ -273,12 +273,11 @@ namespace prjOpenLog {
 						if (4 < sPrm.Length) { sAlgn = sPrm[4]; GetTextOrg(sDat, sAlgn, ft, g, ref fX, ref fY); }
 						g.DrawString(sDat, ft, bh, fX, fY);
 					}
-					if (sCom == "text_date") { //年月日(x, y, フォント名, サイズ, Align, Format, QSO番号)
+					else if (sCom == "text_date") { //年月日(x, y, フォント名, サイズ, Align, Format, QSO番号)
 						int iNo = 0;
 						if (7 <= sPrm.Length) { if (int.TryParse(sPrm[6], out iNo)) { iNo--; } }
 						if (_lsQSO.Count <= iCurIndex + iNo) { continue; }
 						if (_lsQSO[iCurIndex].Call != _lsQSO[iCurIndex + iNo].Call) { continue; }
-						if (_lsQSO[iCurIndex + iNo].Prefix_My == "") { continue; }
 
 						DateTime dtS = DateTime.FromBinary(_lsQSO[iCurIndex + iNo].Date_S).AddHours(_lsQSO[iCurIndex + iNo].TimeZone);
 						string sFmt = "";
@@ -294,7 +293,7 @@ namespace prjOpenLog {
 						if (4 < sPrm.Length) { sAlgn = sPrm[4]; GetTextOrg(sDat2, sAlgn, ft, g, ref fX, ref fY); }
 						g.DrawString(sDat2, ft, bh, fX, fY);
 					}
-					if (sCom == "text_ifdata") { //横書きテキスト #text_ifdata(x, y, フォント名, サイズ, Align, QSO番号, データの時のText, データ以外の時のText)
+					else if (sCom == "text_ifdata") { //横書きテキスト #text_ifdata(x, y, フォント名, サイズ, Align, QSO番号, データの時のText, データ以外の時のText)
 						int iNo = 0;
 						if (6 <= sPrm.Length) { if (int.TryParse(sPrm[5], out iNo)) { iNo--; } }
 
