@@ -303,11 +303,11 @@ namespace prjOpenLog {
 						Font ft = new Font(sPrm[2], fS);
 						Brush bh = Brushes.Black;
 						string sAlgn = "";
-						sDat = sPrm[7];
+						sDat = sPrm[6];
 						string sMd = ""; if (dcDats[iNo].ContainsKey("Mode")) { sMd = dcDats[iNo]["Mode"]; }
 						if (_dcMode.ContainsKey(sMd)) {
 							string sCat = _dcMode[sMd].Type;
-							if (sCat.ToUpper() == "DATA") { sDat = sPrm[6]; }
+							if (sCat.ToUpper() == "DATA") { sDat = sPrm[5]; }
 						}
 						if (4 < sPrm.Length) { sAlgn = sPrm[4]; GetTextOrg(sDat, sAlgn, ft, g, ref fX, ref fY); }
 						g.DrawString(sDat, ft, bh, fX, fY);
