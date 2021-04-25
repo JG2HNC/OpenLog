@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 namespace prjOpenLog {
 	public partial class frmPrintCards : Form {
 		cPrintQSLDocument _pq;
+		float _fDx, _fDy;
 		bool _bIsEH;
 
 		public frmPrintCards(List<cQSO> PrintQSOs, frmMain MainForm) {
@@ -69,6 +70,17 @@ namespace prjOpenLog {
 			catch (Exception ex) {
 				ErrMeg(ex.Message);
 			}
+		}
+
+		//印刷位置微調整
+		private void txtDx_Leave(object sender, EventArgs e) {
+			if(!float.TryParse(txtDx.Text, out _fDx)) { ErrMeg(string.Format("数値に変換できない文字列が入力されました。\n入力された文字列: {0}", txtDx.Text)); txtDx.Text = "0.0"; }
+			else { _pq.SetOrginShiftX(_fDx); }
+		}
+
+		private void txtDy_Leave(object sender, EventArgs e) {
+			if (!float.TryParse(txtDy.Text, out _fDy)) { ErrMeg(string.Format("数値に変換できない文字列が入力されました。\n入力された文字列: {0}", txtDy.Text)); txtDx.Text = "0.0"; }
+			else { _pq.SetOrginShiftY(_fDy); }
 		}
 
 		private void cmdPgNext_Click(object sender, EventArgs e) {

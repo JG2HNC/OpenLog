@@ -51,7 +51,7 @@ namespace prjOpenLog {
 
 			_lsCom = new List<cPrintCom>();
 			fDx = 0f;
-			fDy = 0;
+			fDy = 0f;
 			iQSOsParPage = 1;
 			iTotalQSO = _lsQSO.Count;
 		}
@@ -324,6 +324,9 @@ namespace prjOpenLog {
 			else { e.HasMorePages = false; iCurIndex = 0; }
 
 		}
+
+		public void SetOrginShiftX(float X) { fDx = X;}
+		public void SetOrginShiftY(float Y) { fDy = Y; }
 
 		//Alignmentに応じてテキストの原点を変更する
 		private void GetTextOrg(string Str, string Align, Font FT, Graphics g, ref float X, ref float Y) {
