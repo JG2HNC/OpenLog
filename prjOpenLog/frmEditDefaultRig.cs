@@ -19,7 +19,7 @@ namespace prjOpenLog {
 		public frmEditDefaultRig(frmMain MainForm) {
 			InitializeComponent();
 			_dcDF = MainForm.DefaultRigList;
-			_sDB = Path.Combine(MainForm.Config.DBpath, frmMain.CommonDbFile);
+			_sDB = Path.Combine(MainForm.Config.DBpath, string.Format("{0}.db", MainForm.Config.MyCall));
 			_blDF = new BindingList<cDefaultRig>();
 			foreach(cDefaultRig r in _dcDF.Values) { _blDF.Add(r); }
 			_bs = new BindingSource();
